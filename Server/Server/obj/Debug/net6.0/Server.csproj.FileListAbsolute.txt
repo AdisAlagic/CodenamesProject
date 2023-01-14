@@ -1,0 +1,15 @@
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.csproj.AssemblyReference.cache
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.AssemblyInfoInputs.cache
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.AssemblyInfo.cs
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.csproj.CoreCompileInputs.cache
+C:\Repository\CodenamesProject\Server\Server\bin\Debug\net6.0\Server.exe
+C:\Repository\CodenamesProject\Server\Server\bin\Debug\net6.0\Server.deps.json
+C:\Repository\CodenamesProject\Server\Server\bin\Debug\net6.0\Server.runtimeconfig.json
+C:\Repository\CodenamesProject\Server\Server\bin\Debug\net6.0\Server.dll
+C:\Repository\CodenamesProject\Server\Server\bin\Debug\net6.0\Server.pdb
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.dll
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\refint\Server.dll
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.pdb
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\Server.genruntimeconfig.cache
+C:\Repository\CodenamesProject\Server\Server\obj\Debug\net6.0\ref\Server.dll
