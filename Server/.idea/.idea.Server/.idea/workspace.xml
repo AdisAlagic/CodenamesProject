@@ -4,7 +4,14 @@
     <projectFile>Server/Server.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1c69458a-0646-4372-88c7-42875a191f7e" name="Changes" comment="" />
+    <list default="true" id="1c69458a-0646-4372-88c7-42875a191f7e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Server/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net6.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net6.0/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net6.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net6.0/Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net6.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/net6.0/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net6.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/net6.0/Server.pdb" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -66,6 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1673699823822</updated>
       <workItem from="1673699827033" duration="14208000" />
+      <workItem from="1673714440355" duration="1734000" />
     </task>
     <servers />
   </component>

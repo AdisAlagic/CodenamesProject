@@ -7,7 +7,7 @@ namespace Server;
 class Server
 {
     private readonly TcpListener _listener;
-    private TcpClient _client;
+    
     private int i = 0;
 
     private Server(int port)
@@ -17,8 +17,10 @@ class Server
         Console.WriteLine("Сервер запущен. Ожидание подключений... ");
         
         while (true)
-        {
+        { 
+            TcpClient _client;
            _client = _listener.AcceptTcpClient();
+           Console.WriteLine("Подключение с клиентом " + _client.Client.RemoteEndPoint);
            Task.Run(async ()=>await ProcessClientAsync(_client));
         }
     }
@@ -36,11 +38,11 @@ class Server
 
     async Task ProcessClientAsync(TcpClient tcpClient)
     {
-        Console.WriteLine("Подключение с клиентом #" + i);
+        i++;
+        Console.WriteLine("Подключение с клиентом " + tcpClient.Client.RemoteEndPoint);
         var stream = tcpClient.GetStream();
         string response = "";
         int bytesRead = -1;
-        i++;
         byte[] receiveBuffer = new byte[1024];
         while (bytesRead != 0)
         {
@@ -55,7 +57,9 @@ class Server
             
            if(response != "")
                 await stream.WriteAsync(Encoding.UTF8.GetBytes(i.ToString()));
+           
             response = "";
         }
+        
     }
 }
