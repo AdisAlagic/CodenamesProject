@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Repository\\CodenamesProject\\CodenamesServer\\CodenamesServer.csproj",
-      "projectName": "CodenamesServer",
-      "projectPath": "C:\\Repository\\CodenamesProject\\CodenamesServer\\CodenamesServer.csproj",
+      "projectUniqueName": "C:\\Repository\\CodenamesProject\\Server\\Server\\Server.csproj",
+      "projectName": "Server",
+      "projectPath": "C:\\Repository\\CodenamesProject\\Server\\Server\\Server.csproj",
       "packagesPath": "C:\\Users\\Andrei Maltsev\\.nuget\\packages\\",
-      "outputPath": "C:\\Repository\\CodenamesProject\\CodenamesServer\\obj\\",
+      "outputPath": "C:\\Repository\\CodenamesProject\\Server\\Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Andrei Maltsev\\AppData\\Roaming\\NuGet\\NuGet.Config"
