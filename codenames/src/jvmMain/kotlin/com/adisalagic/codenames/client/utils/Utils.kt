@@ -253,7 +253,7 @@ fun Color.Companion.random(): Color {
     return Color(red, green, blue)
 }
 
-fun Modifier.Companion.cursorPointer(): Modifier {
+fun Modifier.cursorPointer(): Modifier {
     return this.pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
 }
 

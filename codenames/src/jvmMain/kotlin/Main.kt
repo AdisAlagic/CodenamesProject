@@ -1,23 +1,22 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.adisalagic.codenames.client.components.*
+import com.adisalagic.codenames.client.components.LoginScreen
+import com.adisalagic.codenames.client.components.MainFrame
+import com.adisalagic.codenames.client.components.WindowControls
 
 @Composable
 @Preview
-fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit) {
+fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit, isLogged: Boolean = false) {
     MaterialTheme() {
+
         Scaffold(
             backgroundColor = Color(0xFF202020)
         ) {
@@ -26,7 +25,11 @@ fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit) {
                     onCloseClick = onCloseClick,
                     onCollapseClick = onCollapseClick
                 )
-                MainFrame()
+                if (isLogged){
+                    MainFrame()
+                }else{
+                    LoginScreen()
+                }
             }
 
         }

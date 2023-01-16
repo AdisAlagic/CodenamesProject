@@ -14,6 +14,10 @@ fun MainFrame(){
         modifier = Modifier.fillMaxSize()
             .padding(top = 30.dp)
     ){
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopEnd){
+            Spectators()
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize(),

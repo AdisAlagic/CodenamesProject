@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="db8c75df-e112-4728-8700-1cd6147eebf5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/connection/SocketConnection.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/codenames/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2KKKSd2Xhyw0fzW3kpO9PF5D3If" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="db8c75df-e112-4728-8700-1cd6147eebf5" name="Changes" comment="" />
+      <created>1673717838299</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1673717838299</updated>
+    </task>
+    <servers />
+  </component>
+</project>
