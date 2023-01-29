@@ -260,3 +260,15 @@ fun Modifier.cursorPointer(): Modifier {
 fun Modifier.Companion.defaultPointer(): Modifier {
     return this.pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)))
 }
+
+fun flipBits(num: Int): Int{
+    var copy = num
+    var b = 0
+    (Int.SIZE_BITS - 1 downTo 0).forEach {
+        var bit = copy and 0x1
+        bit = bit shl it
+        b = b or bit
+        copy = copy shr 1
+    }
+    return b
+}

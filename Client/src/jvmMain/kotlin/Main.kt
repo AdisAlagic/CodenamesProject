@@ -12,6 +12,7 @@ import com.adisalagic.codenames.client.components.LoginScreen
 import com.adisalagic.codenames.client.components.MainFrame
 import com.adisalagic.codenames.client.components.WindowControls
 
+
 @Composable
 @Preview
 fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit, isLogged: Boolean = false) {
