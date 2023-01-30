@@ -1,6 +1,8 @@
 package com.adisalagic.codenames.server
 
 import com.adisalagic.codenames.Logger
+import com.adisalagic.codenames.server.objects.game.PlayerList
+import com.adisalagic.codenames.utils.generateColor
 import java.io.DataInputStream
 import java.io.IOException
 import java.net.InetAddress
@@ -13,10 +15,15 @@ import kotlin.concurrent.thread
 
 class UserHandler(
     client: Socket,
-    onMessage: (String) -> Unit,
+    private val id: Int,
+    onMessage: (UserHandler, String) -> Unit,
     onDisconnect: (UserHandler, Exception) -> Unit
 ) {
     private val logger = Logger.getLogger(this::class)
+    var justConnected: Boolean = true
+        private set(value){
+            field = value
+        }
     private var connected = true
     private val address = client.inetAddress
     private val queue = ConcurrentLinkedQueue<ByteArray>()
@@ -32,7 +39,10 @@ class UserHandler(
                     do {
                         if (builder.isNotEmpty()) {
                             logger.debug("Got message from ${client.inetAddress}: $builder")
-                            onMessage(builder.toString())
+                            onMessage(this, builder.toString())
+                            if (justConnected){
+                                justConnected = false
+                            }
                             builder.setLength(0)
                         }
                         if (dataInputStream.available() > 0) {
@@ -65,11 +75,20 @@ class UserHandler(
         }
     }
 
+    fun getId(): Int {
+        return id
+    }
+
     fun getAddress(): InetAddress {
         return address
     }
     fun disconnect(){
+        logger.info("Disconnecting user $address")
         connected = false;
+    }
+
+    fun sendMessage(packetable: Packetable){
+        queue.add(packetable.toPaket())
     }
 
     private fun Int.flip(): Int {

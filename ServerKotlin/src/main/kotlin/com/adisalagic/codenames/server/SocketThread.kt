@@ -12,7 +12,9 @@ class ServerThread(
     private val logger = Logger.getLogger(this::class)
 
     private var stop: Boolean = false
+    private var started = false
     private val thread = Thread {
+        started = true
         logger.info("Starting server on port: $port")
         val serverSocket = ServerSocket(port)
         logger.info("Starting server success!")
@@ -20,6 +22,7 @@ class ServerThread(
             val client = serverSocket.accept()
             logger.info("Accepted client ${client.inetAddress}:${client.port}")
             onUserConnected(client)
+            Thread.sleep(200)
         }
     }
 
@@ -28,6 +31,8 @@ class ServerThread(
     }
 
     fun start(){
-        thread.start()
+        if (!started){
+            thread.start()
+        }
     }
 }
