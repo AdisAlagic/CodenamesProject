@@ -1,39 +1,30 @@
 package com.adisalagic.codenames.client.api
 
+import com.adisalagic.codenames.client.api.objects.game.PlayerList
+import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
 import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.logging.Logger
 import kotlin.concurrent.timer
 
-object Manager{
+object Manager {
     private val queue = ConcurrentLinkedQueue<String>()
     private val log = Logger.getLogger("Manager")
-    private var _listener: Listener = object : Listener{
-        override fun onMessageReceive(msg: String) {
-            log.info { "Message received: $msg" }
-        }
-
-        override fun onConnectionSuccess(address: String) {
-
-        }
-
-        override fun onConnecting() {
-
-        }
-
-        override fun onDisconnect(reason: DisconnectReason) {
-
-        }
-
-    }
+    private val eventConverter = EventConverter(
+        onGamePlayerList = { eventListener?.onGamePlayerList(it) }
+    )
+    private var connectionListener: ConnectionListener? = null
+    private var eventListener: EventListener? = null
     private var timerCounter = 0L
     private lateinit var timerObject: Timer
     private val socketThread = SocketThread(
         InetSocketAddress("84.2.212.165", 21721),
         onRead = queue::add,
-        onDisconnect = _listener::onDisconnect,
-        onConnectSuccess = _listener::onConnectionSuccess
+        onDisconnect = { connectionListener?.onDisconnect(it) },
+        onConnectSuccess = {
+            connectionListener?.onConnectionSuccess(it)
+        }
     )
 
     init {
@@ -44,14 +35,17 @@ object Manager{
     fun connect(address: String, nickname: String) {
         socketThread.setAddress(address)
         connect()
+        socketThread.sendMessage(
+            RequestJoin(RequestJoin.User(nickname))
+        )
     }
-    fun connect(){
-        _listener.onConnecting()
-        if (!socketThread.isStarted()){
+
+    fun connect() {
+        connectionListener?.onConnecting()
+        if (!socketThread.isStarted()) {
             socketThread.startListen()
         }
     }
-
 
 
     private fun startCounting() {
@@ -66,21 +60,25 @@ object Manager{
     }
 
     fun getTimer(): Long {
-        synchronized(timerObject){
+        synchronized(timerObject) {
             return timerCounter
         }
     }
 
-    fun setMessageListener(listener: Listener) {
-        _listener = listener
+    fun setConnectionListener(connectionListener: ConnectionListener) {
+        this.connectionListener = connectionListener
     }
 
+    fun setEventListener(eventListener: EventListener){
+        this.eventListener = eventListener
+    }
     private fun listen() {
         Thread {
             while (true) {
                 synchronized(this) {
                     while (queue.isNotEmpty()) {
-                        _listener.onMessageReceive(queue.poll())
+                        val msg = queue.poll()
+                        eventConverter.provide(msg)
                     }
                 }
                 Thread.sleep(300)
@@ -88,16 +86,21 @@ object Manager{
         }.start()
     }
 
-    fun sendMessage(packetable: Packetable) {
+    fun sendMessage(packetable: BaseAPI) {
         socketThread.sendMessage(packetable)
     }
 
 
-    interface Listener{
-        fun onMessageReceive(msg: String)
+    interface ConnectionListener {
         fun onConnectionSuccess(address: String)
 
         fun onConnecting();
         fun onDisconnect(reason: DisconnectReason)
     }
+
+    interface EventListener{
+
+        fun onGamePlayerList(gamePlayerList: PlayerList)
+    }
+
 }

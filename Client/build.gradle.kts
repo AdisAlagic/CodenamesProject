@@ -32,7 +32,8 @@ kotlin {
                 val kotlinVersion = "1.7.20"
                 kotlin("gradle-plugin", version = kotlinVersion)
                 kotlin("serialization", version = kotlinVersion)
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+                implementation("com.google.code.gson:gson:2.10.1")
             }
         }
         val jvmTest by getting

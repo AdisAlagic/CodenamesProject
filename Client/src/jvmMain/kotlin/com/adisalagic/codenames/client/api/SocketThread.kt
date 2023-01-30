@@ -1,5 +1,6 @@
 package com.adisalagic.codenames.client.api
 
+
 import java.io.DataInputStream
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -9,9 +10,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class SocketThread(
     address: InetSocketAddress,
-    onRead: (String) -> Unit = {},
-    onDisconnect: (DisconnectReason) -> Unit = {},
-    onConnectSuccess: (address: String) -> Unit = {}
+    val onRead: (String) -> Unit = {},
+    val onDisconnect: (DisconnectReason) -> Unit = {},
+    val onConnectSuccess: (address: String) -> Unit = {}
 ) {
     private var hardDisconnect = true
     private val sendLimit = 1024;
@@ -30,7 +31,9 @@ class SocketThread(
     fun setAddress(address: String): SocketThread {
         val splitted = address.split(":")
         val port = splitted.getOrElse(1) { "21721" }.toInt()
-        thread = recreateThread(InetSocketAddress(splitted.getOrElse(0) { "127.0.0.1" }, port))
+        thread = recreateThread(
+            InetSocketAddress(splitted.getOrElse(0) { "127.0.0.1" }, port),
+            onRead, onDisconnect, onConnectSuccess)
         return this
     }
 
@@ -42,9 +45,9 @@ class SocketThread(
 
     private fun recreateThread(
         address: InetSocketAddress,
-        onRead: (String) -> Unit = {},
-        onDisconnect: (DisconnectReason) -> Unit = {},
-        onConnectSuccess: (address: String) -> Unit = {}
+        onRead: (String) -> Unit,
+        onDisconnect: (DisconnectReason) -> Unit,
+        onConnectSuccess: (address: String) -> Unit
     ): Thread {
         return Thread {
             try {
@@ -57,7 +60,7 @@ class SocketThread(
                     val builder = StringBuilder()
                     while (!socket.isClosed) {
                         do {
-                            if (builder.isNotEmpty()) {
+                            if (builder.isNotEmpty() && dataInputStream.available() <= 0) {
                                 onRead(builder.toString())
                                 builder.setLength(0)
                             }

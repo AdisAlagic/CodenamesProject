@@ -12,16 +12,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.adisalagic.codenames.client.colors.NeutralSide
 import com.adisalagic.codenames.client.colors.TextColorBlue
+import com.adisalagic.codenames.client.utils.DEFAULT_CURSOR
+import com.adisalagic.codenames.client.utils.HAND_CURSOR_ICON
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.viewmodels.LoginViewModel
+import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 
 @Composable
 fun LoginScreen() {
-    val loginModel = LoginViewModel()
+    val loginModel = ViewModelsStore.loginViewModel
     val data by loginModel.state.collectAsState()
 
     Box(
@@ -58,10 +62,16 @@ fun LoginScreen() {
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(modifier = Modifier
                     .width(200.dp)
-                    .cursorPointer(),
+                    .pointerHoverIcon(
+                        if (data.connectionState != LoginViewModel.ConnectionState.CONNECTING){
+                            HAND_CURSOR_ICON
+                        }else{
+                            DEFAULT_CURSOR
+                        }
+                    ),
+                    enabled = data.connectionState != LoginViewModel.ConnectionState.CONNECTING,
                     onClick = {
                         loginModel.connect()
-                        loginModel.sendHello()
                     }) {
                     RText(text = "Войти")
                 }
@@ -106,6 +116,7 @@ fun Input(init: String, onText: (text: String) -> Unit) {
             },
             onValueChange = {
                 value = it
+                onText(it)
             },
         )
     }

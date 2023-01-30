@@ -1,13 +1,10 @@
 package com.adisalagic.codenames.client.viewmodels
 
-import androidx.compose.runtime.collectAsState
-import com.adisalagic.codenames.client.api.BaseAPI
 import com.adisalagic.codenames.client.api.DisconnectReason
 import com.adisalagic.codenames.client.api.Manager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.logging.Logger
 
 
@@ -17,10 +14,7 @@ class LoginViewModel : ViewModel() {
     val log = Logger.getLogger("Login")
 
     init {
-        Manager.setMessageListener(object : Manager.Listener {
-            override fun onMessageReceive(msg: String) {
-                log.info { "Message received: $msg" }
-            }
+        Manager.setConnectionListener(object : Manager.ConnectionListener {
 
             override fun onConnectionSuccess(address: String) {
                 log.info { "Connected to server: $address" }
@@ -47,11 +41,7 @@ class LoginViewModel : ViewModel() {
 
         })
     }
-    fun sendHello() {
-        viewModelScope.launch {
-            Manager.sendMessage(BaseAPI("kek"))
-        }
-    }
+
 
     fun update(data: Data){
         _state.update { it.copy(
@@ -61,7 +51,7 @@ class LoginViewModel : ViewModel() {
         ) }
     }
     fun connect(){
-        Manager.connect(state.value.address, state.value.nickname)
+        Manager.connect(_state.value.address, _state.value.nickname)
     }
     data class Data(val address: String, val nickname: String, val connectionState: ConnectionState)
 

@@ -17,7 +17,7 @@ class UserHandler(
     client: Socket,
     private val id: Int,
     onMessage: (UserHandler, String) -> Unit,
-    onDisconnect: (UserHandler, Exception) -> Unit
+    private val onDisconnect: (UserHandler, Exception) -> Unit
 ) {
     private val logger = Logger.getLogger(this::class)
     var justConnected: Boolean = true
@@ -54,14 +54,20 @@ class UserHandler(
                             }
                             builder.append(String(byteBuffer!!, 0, needToRead))
                         }
-                    } while (inStream.available() > 0)
+                        Thread.sleep(20)
+                    } while (dataInputStream.available() > 0)
                     var sendCounter = 0;
                     synchronized(this) {
                         while (queue.isNotEmpty()) {
-                            client.getOutputStream().write(queue.poll())
-                            sendCounter++;
-                            if (sendCounter > sendLimit) {
-                                break
+                            try {
+                                client.getOutputStream().write(queue.poll())
+                                sendCounter++;
+                                if (sendCounter > sendLimit) {
+                                    break
+                                }
+                            }catch (e: Exception){
+                                onDisconnect(this, e)
+                                connected = false
                             }
                         }
                     }
@@ -85,6 +91,7 @@ class UserHandler(
     fun disconnect(){
         logger.info("Disconnecting user $address")
         connected = false;
+        onDisconnect(this, DisconnectException())
     }
 
     fun sendMessage(packetable: Packetable){

@@ -97,10 +97,10 @@ private fun Players(side: Side) {
         ) {
             FreeSlot("Стать ведущим") {}
             MasterLine()
-            for (i in 1..10){
-                PlayerCard("$i", Color.random(), direction)
-                Spacer(Modifier.height(5.dp))
-            }
+//            for (i in 1..10){
+//                PlayerCard("$i", Color.random(), direction)
+//                Spacer(Modifier.height(5.dp))
+//            }
             FreeSlot("Стать игроком"){}
         }
     }

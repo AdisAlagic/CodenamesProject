@@ -1,20 +1,23 @@
 package com.adisalagic.codenames.client.api
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
-@Serializable
-data class BaseAPI(
-    val event: String,
-) : Packetable {
+
+abstract class BaseAPI(val event: String?): Packetable {
+
     override fun writeAsPacket(): ByteArray {
-        val string = Json.encodeToString(serializer(), this)
+        val string = Gson().toJson(this)
         val encoding = StandardCharsets.UTF_8
-        val bytes = encoding.encode(string).array()
-        val size = bytes.size
+        var bytes = encoding.encode(string)
+        var array: ByteArray
+        array = bytes.array()
+        if (bytes.remaining() > 0){
+            array = array.copyOfRange(0, array.size - (array.size - bytes.remaining())) //getting rid of zero bytes
+        }
+        val size = array.size
         return ByteBuffer
             .allocate(Int.SIZE_BYTES + size)
             .order(ByteOrder.LITTLE_ENDIAN)

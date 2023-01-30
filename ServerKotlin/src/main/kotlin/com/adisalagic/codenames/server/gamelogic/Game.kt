@@ -2,7 +2,7 @@ package com.adisalagic.codenames.server.gamelogic
 
 import com.adisalagic.codenames.utils.generateColor
 
-class Game(listener: GameListener) {
+class Game(val listener: GameListener) {
     private val playerList = ArrayList<Player>()
     private var host: String = ""
 
@@ -46,6 +46,7 @@ class Game(listener: GameListener) {
             team = Team.NONE
         )
         playerList.add(player)
+        listener.onPlayerListChanged(playerList)
         return player
     }
 }

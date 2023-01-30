@@ -1,10 +1,5 @@
 package com.adisalagic.codenames.client.utils
 
-import androidx.compose.ui.graphics.Color
-import kotlin.random.Random
-
-import androidx.compose.foundation.BorderStroke
-
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -22,6 +17,7 @@ import androidx.compose.foundation.BorderStroke
  */
 
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
@@ -37,6 +33,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import java.awt.Cursor
+import kotlin.random.Random
 
 /**
  * Modify element to add border with appearance specified with a [border] and a [shape], pad the
@@ -253,22 +250,14 @@ fun Color.Companion.random(): Color {
     return Color(red, green, blue)
 }
 
+val HAND_CURSOR_ICON = PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
+val DEFAULT_CURSOR = PointerIcon(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
 fun Modifier.cursorPointer(): Modifier {
-    return this.pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)))
+    return this.pointerHoverIcon(HAND_CURSOR_ICON)
 }
+
 
 fun Modifier.Companion.defaultPointer(): Modifier {
-    return this.pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)))
+    return this.pointerHoverIcon(DEFAULT_CURSOR)
 }
 
-fun flipBits(num: Int): Int{
-    var copy = num
-    var b = 0
-    (Int.SIZE_BITS - 1 downTo 0).forEach {
-        var bit = copy and 0x1
-        bit = bit shl it
-        b = b or bit
-        copy = copy shr 1
-    }
-    return b
-}

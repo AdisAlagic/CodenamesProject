@@ -1,10 +1,11 @@
-package com.adisalagic.codenames.server.objects.game
+package com.adisalagic.codenames.client.api.objects.game
 
 
-import com.adisalagic.codenames.server.BaseAPI
+import com.adisalagic.codenames.client.api.BaseAPI
 
 
 data class PlayerList(
+
     val users: List<User>
 ) : BaseAPI("game_playerlist") {
 

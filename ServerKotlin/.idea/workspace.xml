@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="" />
+    <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/ViewModelsStore.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Packetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Packetable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,9 +55,9 @@
       <list>
         <option value="Kotlin Data Class" />
         <option value="Kotlin File" />
-        <option value="Kotlin Object" />
         <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
+        <option value="Kotlin Object" />
       </list>
     </option>
   </component>
@@ -122,6 +137,22 @@
       <updated>1674986688940</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/ConnectionManager.kt</url>
+          <line>30</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/GameManager.kt</url>
+          <line>17</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

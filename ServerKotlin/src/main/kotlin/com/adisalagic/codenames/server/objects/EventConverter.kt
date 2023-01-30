@@ -1,20 +1,29 @@
 package com.adisalagic.codenames.server.objects
 
-import com.adisalagic.codenames.server.BaseAPI
+import com.adisalagic.codenames.server.objects.game.PlayerList
 import com.adisalagic.codenames.server.objects.requests.RequestJoin
+import com.google.gson.Gson
 
 class EventConverter(
-    private val onRequestJoin: (RequestJoin) -> Unit
+    private val onRequestJoin: (RequestJoin) -> Unit,
+    private val onGamePlayerList: (PlayerList) -> Unit
 ) {
+
+    private val gson = Gson()
     private val REQUEST_JOIN = "request_join"
 
-    fun <T: BaseAPI> provide(obj: T){
-        when(obj.event){
-            REQUEST_JOIN -> onRequestJoin(obj as RequestJoin)
+    private val GAME_PLAYERLIST = "game_playerlist"
+
+    fun provide(obj: String){
+        if (obj.contains(REQUEST_JOIN)){
+            onRequestJoin(gson.fromJson(obj, RequestJoin::class.java))
+        }
+        if (obj.contains(GAME_PLAYERLIST)){
+            onGamePlayerList(gson.fromJson(obj, PlayerList::class.java))
         }
     }
 
-    fun <T: BaseAPI> isJoinRequest(obj: T): Boolean {
-        return obj.event == REQUEST_JOIN
+    fun isJoinRequest(obj: String): Boolean {
+        return obj.contains(REQUEST_JOIN)
     }
 }

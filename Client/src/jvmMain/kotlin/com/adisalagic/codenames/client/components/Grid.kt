@@ -13,7 +13,7 @@ fun WordGrid() {
         for (i in 1..size) {
             Row {
                 for (j in 1..6){
-                    WordBox((i*j).toString(), randomSide(), false)
+                    WordBox("???", randomSide(), false)
                     Spacer(Modifier.width(10.dp))
                 }
             }
