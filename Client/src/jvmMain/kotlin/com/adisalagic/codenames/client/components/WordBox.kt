@@ -108,7 +108,6 @@ private fun getTextColor(visible: Boolean, side: Side): Color {
 }
 
 enum class Side {
-
     BLUE,
     RED,
     BLACK,

@@ -261,3 +261,10 @@ fun Modifier.Companion.defaultPointer(): Modifier {
     return this.pointerHoverIcon(DEFAULT_CURSOR)
 }
 
+fun Color.Companion.parseColor(color: String): Color{
+    return try {
+        Color(color.replace("#", "FF").toLong(16))
+    }catch (_: Exception){
+        Black
+    }
+}

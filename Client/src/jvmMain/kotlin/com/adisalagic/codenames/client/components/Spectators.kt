@@ -26,11 +26,13 @@ fun Spectators() {
                 .padding(5.dp)
         ) {
             data.playerList.users.forEach {
-                RText(
-                    text = it.nickname,
-                    fontSize = 15.sp,
-                )
-                Spacer(modifier = Modifier.width(2.dp))
+                if (it.role.equals("spectator")){
+                    RText(
+                        text = it.nickname,
+                        fontSize = 15.sp,
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                }
             }
         }
     }

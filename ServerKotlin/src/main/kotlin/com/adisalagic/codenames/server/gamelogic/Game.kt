@@ -2,7 +2,7 @@ package com.adisalagic.codenames.server.gamelogic
 
 import com.adisalagic.codenames.utils.generateColor
 
-class Game(val listener: GameListener) {
+class Game(private val listener: GameListener) {
     private val playerList = ArrayList<Player>()
     private var host: String = ""
 
@@ -34,6 +34,23 @@ class Game(val listener: GameListener) {
                 playerList[playerList.indexOf(player)] = player.copy(isHost = true)
             }
         }
+    }
+
+    fun deleteUser(id: Int){
+        playerList.remove(playerList.find { it.id == id })
+        listener.onPlayerListChanged(playerList)
+    }
+
+    private fun editPlayer(player: Player){
+        playerList[playerList.indexOf(
+            playerList.find { it.id == player.id }
+        )] = player
+        listener.onPlayerListChanged(playerList)
+    }
+
+    fun changeTeamOrRole(id: Int, role: String, team: String){
+        val player = playerList.find { it.id == id }
+        editPlayer(player!!.copy(role = Role.valueOf(role.uppercase()), team = Team.valueOf(team.uppercase())))
     }
 
     fun generatePlayer(id: Int, nick: String): Player {

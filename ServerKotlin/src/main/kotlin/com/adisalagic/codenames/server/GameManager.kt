@@ -21,4 +21,8 @@ object GameManager {
     }
     val game = Game(listener)
 
+    fun removeUser(id: Int){
+        game.deleteUser(id)
+    }
+
 }

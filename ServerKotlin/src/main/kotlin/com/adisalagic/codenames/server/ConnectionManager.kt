@@ -2,6 +2,7 @@ package com.adisalagic.codenames.server
 
 import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.objects.EventConverter
+import com.adisalagic.codenames.server.objects.game.PlayerInfo
 import java.util.*
 
 object ConnectionManager {
@@ -22,14 +23,14 @@ object ConnectionManager {
                         val isJoin = eventConverter.isJoinRequest(msg)
                         if (!isJoin) {
                             user.disconnect()
-                        } else {
-                            eventConverter.provide(msg)
                         }
                     }
+                    eventConverter.provide(msg)
                 },
                 onDisconnect = { user, exception ->
-                    logger.info("User disconnected: ${exception.message}")
+                    logger.info("User ${user.getAddress()}:${user.getPort()} disconnected: ${exception.message}")
                     connections.remove(user)
+                    GameManager.removeUser(user.getId())
                 }
             ))
         }
@@ -38,10 +39,27 @@ object ConnectionManager {
 
     private val eventConverter = EventConverter(
         onRequestJoin = {
-            GameManager.game.generatePlayer(connections.size, it.user.nickname)
+            val player = GameManager.game.generatePlayer(connections.size - 1, it.user.nickname)
+            val conPlayer = connections.find { user -> user.getId() == player.id }
+            conPlayer?.sendMessage(PlayerInfo(PlayerInfo.User(
+                color = player.color,
+                id = player.id,
+                isHost = player.isHost,
+                nickname = player.nickname,
+                role = player.role.name.lowercase(),
+                team = player.team.name.lowercase()
+            )))
         },
         onGamePlayerList = {
 
+        },
+        onRequestJoinTeam = {
+            logger.info("Move request of player ${it.request.user.id}")
+            GameManager.game.changeTeamOrRole(
+                id = it.request.user.id,
+                role = it.request.user.role,
+                team = it.request.user.team
+            )
         }
     )
 

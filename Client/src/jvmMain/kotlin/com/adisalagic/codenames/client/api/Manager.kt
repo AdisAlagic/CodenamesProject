@@ -1,5 +1,6 @@
 package com.adisalagic.codenames.client.api
 
+import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
 import java.net.InetSocketAddress
@@ -12,7 +13,8 @@ object Manager {
     private val queue = ConcurrentLinkedQueue<String>()
     private val log = Logger.getLogger("Manager")
     private val eventConverter = EventConverter(
-        onGamePlayerList = { eventListener?.onGamePlayerList(it) }
+        onGamePlayerList = { eventListener?.onGamePlayerList(it) },
+        onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) }
     )
     private var connectionListener: ConnectionListener? = null
     private var eventListener: EventListener? = null
@@ -86,7 +88,7 @@ object Manager {
         }.start()
     }
 
-    fun sendMessage(packetable: BaseAPI) {
+    fun sendMessage(packetable: Packetable) {
         socketThread.sendMessage(packetable)
     }
 
@@ -101,6 +103,8 @@ object Manager {
     interface EventListener{
 
         fun onGamePlayerList(gamePlayerList: PlayerList)
+
+        fun onGamePlayerInfo(playerInfo: PlayerInfo)
     }
 
 }

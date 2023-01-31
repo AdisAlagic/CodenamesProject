@@ -11,10 +11,10 @@ open class BaseAPI(val event: String?): Packetable {
         val string = Gson().toJson(this)
         val encoding = StandardCharsets.UTF_8
         var bytes = encoding.encode(string)
-        var array: ByteArray
-        array = bytes.array()
+        var array= bytes.array()
+        val sizeArrayTemp = array.size
         if (bytes.remaining() > 0){
-            array = array.copyOfRange(0, array.size - (array.size - bytes.remaining())) //getting rid of zero bytes
+            array = array.copyOfRange(0, sizeArrayTemp - (sizeArrayTemp - bytes.remaining())) //getting rid of zero bytes
         }
         val size = array.size
         return ByteBuffer

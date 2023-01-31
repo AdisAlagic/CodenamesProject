@@ -5,20 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/ViewModelsStore.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Packetable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Packetable.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +54,7 @@
         <option value="Kotlin Interface" />
         <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -143,16 +140,21 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/ConnectionManager.kt</url>
-          <line>30</line>
-          <option name="timeStamp" value="3" />
+          <line>20</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/GameManager.kt</url>
-          <line>17</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/objects/EventConverter.kt</url>
+          <line>21</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.adisalagic.codenames.server.gamelogic.Player" memberName="id" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

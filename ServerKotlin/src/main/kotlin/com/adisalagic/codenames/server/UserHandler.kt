@@ -4,10 +4,12 @@ import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.objects.game.PlayerList
 import com.adisalagic.codenames.utils.generateColor
 import java.io.DataInputStream
+import java.io.EOFException
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -26,9 +28,11 @@ class UserHandler(
         }
     private var connected = true
     private val address = client.inetAddress
+    private val port = client.port
     private val queue = ConcurrentLinkedQueue<ByteArray>()
     private val sendLimit = 1024;
     private val thread = thread {
+        client.soTimeout = 120
         var byteBuffer: ByteArray?
         val inStream = client.getInputStream()
         val dataInputStream = DataInputStream(inStream)
@@ -45,7 +49,7 @@ class UserHandler(
                             }
                             builder.setLength(0)
                         }
-                        if (dataInputStream.available() > 0) {
+                        try{
                             val needToRead = dataInputStream.readInt().flip()
                             byteBuffer = ByteArray(needToRead)
                             val bytes = dataInputStream.read(byteBuffer!!, 0, needToRead)
@@ -53,6 +57,11 @@ class UserHandler(
                                 client.close()
                             }
                             builder.append(String(byteBuffer!!, 0, needToRead))
+                        }catch (_: SocketTimeoutException){
+
+                        }catch (eof: EOFException){
+                            onDisconnect(this, eof)
+                            connected = false
                         }
                         Thread.sleep(20)
                     } while (dataInputStream.available() > 0)
@@ -74,7 +83,7 @@ class UserHandler(
                     Thread.sleep(200)
                 }
                 client.close()
-                onDisconnect(this, DisconnectException())
+//                onDisconnect(this, DisconnectException())
             }
         }catch (e: IOException){
             onDisconnect(this, e)
@@ -87,6 +96,10 @@ class UserHandler(
 
     fun getAddress(): InetAddress {
         return address
+    }
+
+    fun getPort(): Int{
+        return port
     }
     fun disconnect(){
         logger.info("Disconnecting user $address")

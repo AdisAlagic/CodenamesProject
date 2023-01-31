@@ -8,7 +8,6 @@ data class PlayerList(
 
     val users: List<User>
 ) : BaseAPI("game_playerlist") {
-
     data class User(
         val color: String,
         val id: Int,
@@ -17,4 +16,11 @@ data class PlayerList(
         val role: String,
         val team: String
     )
+    fun getMasters(): List<User> {
+        return users.filter { it.role.equals("master", true) }
+    }
+
+    fun getPlayers(team: String): List<User> {
+        return users.filter { it.role.equals("player", true) && it.team.equals(team, true) }
+    }
 }

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -16,21 +18,29 @@ import androidx.compose.ui.unit.sp
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.utils.dashedBorder
+import com.adisalagic.codenames.client.utils.parseColor
 import com.adisalagic.codenames.client.utils.random
+import com.adisalagic.codenames.client.viewmodels.MainFrameViewModel
+import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
+
+val model = ViewModelsStore.mainFrameViewModel
 
 @Composable
 fun PlayerList(side: Side) {
+
+
     Box(
         modifier = Modifier
             .width(200.dp)
             .height(650.dp)
     ) {
         Row {
-            when (side){
+            when (side) {
                 Side.BLUE -> {
                     Players(side)
                     BlueLine()
                 }
+
                 Side.BLACK,
                 Side.NEUTRAL,
                 Side.RED -> {
@@ -42,7 +52,6 @@ fun PlayerList(side: Side) {
         }
     }
 }
-
 
 @Composable
 private fun RedLine() {
@@ -56,7 +65,7 @@ private fun RedLine() {
 }
 
 @Composable
-private fun BlueLine(){
+private fun BlueLine() {
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -66,26 +75,30 @@ private fun BlueLine(){
     )
 }
 
-
-
 @Composable
 private fun Players(side: Side) {
-    var direction = if (side == Side.BLUE){
+    val data by model.state.collectAsState()
+    val direction = if (side == Side.BLUE) {
         Direction.LEFT
-    }else{
+    } else {
         Direction.RIGHT
     }
     Box(
         modifier = Modifier
             .background(
-                when (side){
+                when (side) {
                     Side.BLUE -> {
                         TeamBlueBackground
                     }
+
                     Side.RED -> {
-                        TeamRedBackground}
+                        TeamRedBackground
+                    }
+
                     Side.BLACK,
-                    Side.NEUTRAL -> { throw IllegalArgumentException("You cant have BLACK or NEUTRAL side here!")}
+                    Side.NEUTRAL -> {
+                        throw IllegalArgumentException("You cant have BLACK or NEUTRAL side here!")
+                    }
                 }
             )
             .fillMaxHeight()
@@ -95,13 +108,40 @@ private fun Players(side: Side) {
             modifier = Modifier
                 .padding(10.dp)
         ) {
-            FreeSlot("Стать ведущим") {}
+            val masters = data.playerList.getMasters()
+            val master = masters.find { it.team.equals(side.name, true) }
+            if (master != null) {
+                PlayerCard(
+                    playerName = master.nickname,
+                    playerColor = Color.parseColor(master.color),
+                    direction = direction
+                )
+            } else {
+                FreeSlot("Стать ведущим") {
+                    model.sendBecomeMasterRequest(side)
+                }
+            }
+
             MasterLine()
 //            for (i in 1..10){
 //                PlayerCard("$i", Color.random(), direction)
 //                Spacer(Modifier.height(5.dp))
 //            }
-            FreeSlot("Стать игроком"){}
+            data.playerList.getPlayers(side.name.lowercase()).forEach {
+                PlayerCard(
+                    playerName = it.nickname,
+                    playerColor = Color.parseColor(it.color),
+                    direction = direction
+                )
+                Spacer(Modifier.height(5.dp))
+            }
+            val me = data.playerList.getPlayers(side.name.lowercase()).find { data.myself!!.user.id == it.id }
+            if (me == null){
+                FreeSlot("Стать игроком") {
+                    model.sendBecomePlayerRequest(side)
+                }
+            }
+
         }
     }
 }
@@ -139,7 +179,8 @@ private fun FreeSlot(slotText: String, onClick: () -> Unit) {
         )
     }
 }
+
 @Composable
-private fun Logs(){
+private fun Logs() {
 
 }
