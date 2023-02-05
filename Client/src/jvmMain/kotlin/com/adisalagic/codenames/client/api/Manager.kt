@@ -1,8 +1,11 @@
 package com.adisalagic.codenames.client.api
 
+import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
+import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
+import org.apache.logging.log4j.LogManager
 import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -11,10 +14,11 @@ import kotlin.concurrent.timer
 
 object Manager {
     private val queue = ConcurrentLinkedQueue<String>()
-    private val log = Logger.getLogger("Manager")
+    private val log = LogManager.getLogger("Manager")
     private val eventConverter = EventConverter(
         onGamePlayerList = { eventListener?.onGamePlayerList(it) },
-        onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) }
+        onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) },
+        onGameState = { eventListener?.onGameState(it) }
     )
     private var connectionListener: ConnectionListener? = null
     private var eventListener: EventListener? = null
@@ -23,7 +27,10 @@ object Manager {
     private val socketThread = SocketThread(
         InetSocketAddress("84.2.212.165", 21721),
         onRead = queue::add,
-        onDisconnect = { connectionListener?.onDisconnect(it) },
+        onDisconnect = {
+            connectionListener?.onDisconnect(it)
+            ViewModelsStore.mainFrameViewModel.reset()
+        },
         onConnectSuccess = {
             connectionListener?.onConnectionSuccess(it)
         }
@@ -49,6 +56,9 @@ object Manager {
         }
     }
 
+    fun disconnect() {
+        socketThread.disconnect()
+    }
 
     private fun startCounting() {
         timerObject = timer(
@@ -71,17 +81,16 @@ object Manager {
         this.connectionListener = connectionListener
     }
 
-    fun setEventListener(eventListener: EventListener){
+    fun setEventListener(eventListener: EventListener) {
         this.eventListener = eventListener
     }
+
     private fun listen() {
         Thread {
             while (true) {
-                synchronized(this) {
-                    while (queue.isNotEmpty()) {
-                        val msg = queue.poll()
-                        eventConverter.provide(msg)
-                    }
+                while (queue.isNotEmpty()) {
+                    val msg = queue.poll()
+                    eventConverter.provide(msg)
                 }
                 Thread.sleep(300)
             }
@@ -96,15 +105,16 @@ object Manager {
     interface ConnectionListener {
         fun onConnectionSuccess(address: String)
 
-        fun onConnecting();
+        fun onConnecting()
         fun onDisconnect(reason: DisconnectReason)
     }
 
-    interface EventListener{
+    interface EventListener {
 
         fun onGamePlayerList(gamePlayerList: PlayerList)
 
         fun onGamePlayerInfo(playerInfo: PlayerInfo)
+        fun onGameState(gameState: GameState)
     }
 
 }

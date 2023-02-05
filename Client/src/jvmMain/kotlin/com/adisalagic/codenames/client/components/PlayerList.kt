@@ -27,8 +27,6 @@ val model = ViewModelsStore.mainFrameViewModel
 
 @Composable
 fun PlayerList(side: Side) {
-
-
     Box(
         modifier = Modifier
             .width(200.dp)

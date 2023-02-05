@@ -1,11 +1,12 @@
 package com.adisalagic.codenames.server
 
 import com.adisalagic.codenames.Logger
+import com.adisalagic.codenames.server.configuration.ConfigurationManager
 import java.net.ServerSocket
 import java.net.Socket
 
 class ServerThread(
-    port: Int = 21721,
+    port: Int = ConfigurationManager.config.port,
     onAnyError: (Exception) -> Unit,
     onUserConnected: (Socket) -> Unit
 ) {

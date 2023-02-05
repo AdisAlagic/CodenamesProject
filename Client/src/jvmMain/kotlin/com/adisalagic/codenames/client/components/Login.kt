@@ -82,8 +82,7 @@ fun LoginScreen() {
 
 @Composable
 fun TextBox(init: String, title: String, onText: (text: String) -> Unit) {
-    Column(
-    ) {
+    Column {
         RText(text = title)
         Input(init, onText = onText)
     }

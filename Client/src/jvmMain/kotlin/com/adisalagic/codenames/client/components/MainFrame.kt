@@ -24,14 +24,15 @@ fun MainFrame() {
             modifier = Modifier.fillMaxSize().background(Color.Transparent),
             contentAlignment = Alignment.Center
         ) {
-            Box(modifier = Modifier.height(100.dp),
-                contentAlignment = Alignment.Center){
-                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.width(20.dp))
-                    RText(text = "Получаю данные об игроках", fontColor = TextColor)
-                }
-            }
+            MessageBox("Получаю данные об игроках")
+        }
+    }
+    if (data.playerList.getHost() == null){
+        Box(
+            modifier = Modifier.fillMaxSize().background(Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            MessageBox("Ожидание подключения хоста")
         }
     }
 
@@ -70,6 +71,12 @@ fun MainFrame() {
             contentAlignment = Alignment.TopCenter
         ) {
             Score()
+        }
+        if (/*data.myself?.user?.isHost ==*/ true){
+            Box(modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter){
+                AdminPanel()
+            }
         }
     }
 }

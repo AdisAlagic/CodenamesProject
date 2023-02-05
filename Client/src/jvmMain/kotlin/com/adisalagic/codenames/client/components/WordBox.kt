@@ -19,14 +19,14 @@ import kotlin.concurrent.timer
 @OptIn(ExperimentalMaterialApi::class)
 @Preview()
 @Composable
-fun WordBox(word: String, side: Side, visible: Boolean = false) {
+fun WordBox(word: String, side: Side, visible: Boolean) {
     var progress by remember {
         mutableStateOf(0f)
     }
     var clicked by remember {
         mutableStateOf(false)
     }
-    var timer: Timer? = null;
+    var timer: Timer? = null
     Card(
         modifier = Modifier
             .cursorPointer()

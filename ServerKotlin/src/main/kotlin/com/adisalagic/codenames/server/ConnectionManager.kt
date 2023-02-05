@@ -3,6 +3,8 @@ package com.adisalagic.codenames.server
 import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.objects.EventConverter
 import com.adisalagic.codenames.server.objects.game.PlayerInfo
+import com.adisalagic.codenames.utils.asNetGameState
+import com.adisalagic.codenames.utils.isHost
 import java.util.*
 
 object ConnectionManager {
@@ -28,9 +30,9 @@ object ConnectionManager {
                     eventConverter.provide(msg)
                 },
                 onDisconnect = { user, exception ->
-                    logger.info("User ${user.getAddress()}:${user.getPort()} disconnected: ${exception.message}")
+                    logger.info("User ${user.getAddress()}:${user.getPort()} disconnected: ${exception.message} (${exception.cause})")
                     connections.remove(user)
-                    GameManager.removeUser(user.getId())
+                    GameManager.game.deleteUser(user.getId())
                 }
             ))
         }
@@ -49,17 +51,27 @@ object ConnectionManager {
                 role = player.role.name.lowercase(),
                 team = player.team.name.lowercase()
             )))
-        },
-        onGamePlayerList = {
-
+            conPlayer?.sendMessage(GameManager.game.getCurrentState().asNetGameState())
         },
         onRequestJoinTeam = {
-            logger.info("Move request of player ${it.request.user.id}")
+            logger.debug("Move request of player ${it.request.user.id}")
             GameManager.game.changeTeamOrRole(
                 id = it.request.user.id,
                 role = it.request.user.role,
                 team = it.request.user.team
             )
+        },
+        onRequestRestart = {
+            logger.debug("Restart request of player ${it.user.id}")
+            if (it.isHost()){
+                GameManager.game.restartGame()
+            }
+        },
+        onRequestShuffleTeams = {
+            logger.debug("Shuffle teams request of player ${it.user.id}")
+            if (it.isHost()){
+                GameManager.game.shuffleTeams()
+            }
         }
     )
 

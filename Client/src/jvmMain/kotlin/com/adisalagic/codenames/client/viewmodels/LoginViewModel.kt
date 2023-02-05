@@ -5,29 +5,30 @@ import com.adisalagic.codenames.client.api.Manager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.logging.Logger
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
 
 class LoginViewModel : ViewModel() {
     private val _state = MutableStateFlow(Data("127.0.0.1:21721", "", ConnectionState.DISCONNECTED))
     val state = _state.asStateFlow()
-    val log = Logger.getLogger("Login")
+    val log: Logger = LogManager.getLogger("Login")
 
     init {
         Manager.setConnectionListener(object : Manager.ConnectionListener {
 
             override fun onConnectionSuccess(address: String) {
-                log.info { "Connected to server: $address" }
+                log.info("Connected to server: $address")
                 _state.update { it.copy(connectionState = ConnectionState.CONNECTED) }
             }
 
             override fun onConnecting() {
-                log.info { "Starting connection..." }
+                log.info("Starting connection...")
                 _state.update { it.copy(connectionState = ConnectionState.CONNECTING) }
             }
 
             override fun onDisconnect(reason: DisconnectReason) {
-                log.info {
+                log.info(
                     "Disconnected! ${
                         if (reason == DisconnectReason.SOFT) {
                             " By user"
@@ -35,7 +36,7 @@ class LoginViewModel : ViewModel() {
                             " Something broke"
                         }
                     }"
-                }
+                )
                 _state.update { it.copy(connectionState = ConnectionState.DISCONNECTED) }
             }
 

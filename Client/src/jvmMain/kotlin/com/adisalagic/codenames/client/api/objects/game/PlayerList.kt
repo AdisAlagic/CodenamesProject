@@ -20,7 +20,15 @@ data class PlayerList(
         return users.filter { it.role.equals("master", true) }
     }
 
+    fun getHost(): User? {
+        return users.find { it.isHost }
+    }
+
     fun getPlayers(team: String): List<User> {
         return users.filter { it.role.equals("player", true) && it.team.equals(team, true) }
+    }
+
+    fun getSpectators(): List<User> {
+        return users.filter { it.role.equals("spectator", true) }
     }
 }

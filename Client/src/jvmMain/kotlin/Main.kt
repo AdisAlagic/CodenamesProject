@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
 @Composable
 @Preview
 fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit) {
-    MaterialTheme() {
+    MaterialTheme {
         Scaffold(
             backgroundColor = Color(0xFF202020)
         ) {

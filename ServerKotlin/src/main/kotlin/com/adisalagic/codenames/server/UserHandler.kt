@@ -32,7 +32,7 @@ class UserHandler(
     private val queue = ConcurrentLinkedQueue<ByteArray>()
     private val sendLimit = 1024;
     private val thread = thread {
-        client.soTimeout = 120
+        client.soTimeout = 60
         var byteBuffer: ByteArray?
         val inStream = client.getInputStream()
         val dataInputStream = DataInputStream(inStream)
@@ -63,13 +63,14 @@ class UserHandler(
                             onDisconnect(this, eof)
                             connected = false
                         }
-                        Thread.sleep(20)
                     } while (dataInputStream.available() > 0)
                     var sendCounter = 0;
                     synchronized(this) {
                         while (queue.isNotEmpty()) {
                             try {
+                                logger.debug("Sending message...")
                                 client.getOutputStream().write(queue.poll())
+                                logger.debug("Sent!")
                                 sendCounter++;
                                 if (sendCounter > sendLimit) {
                                     break
@@ -80,13 +81,14 @@ class UserHandler(
                             }
                         }
                     }
-                    Thread.sleep(200)
                 }
                 client.close()
 //                onDisconnect(this, DisconnectException())
             }
         }catch (e: IOException){
             onDisconnect(this, e)
+            connected = false
+
         }
     }
 

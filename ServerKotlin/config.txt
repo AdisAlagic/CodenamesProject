@@ -1,0 +1,5 @@
+debug=true
+host=AdisAlagic
+ip=
+port=21721
+dictionary=dict.txt
