@@ -12,7 +12,9 @@ data class GameState(
     @SerializedName("state")
     val state: String,
     @SerializedName("turn")
-    val turn: Turn
+    val turn: Turn,
+    @SerializedName("words")
+    val words: List<Word>
 ) : BaseAPI("game_state") {
     data class BlueScore(
         @SerializedName("score")
@@ -34,4 +36,24 @@ data class GameState(
         @SerializedName("team")
         val team: String
     )
+
+    data class Word(
+        @SerializedName("id")
+        val id: Int,
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("side")
+        val side: String,
+        @SerializedName("visible")
+        val visible: Boolean,
+        @SerializedName("users_pressed")
+        val usersPressed: List<PlayerInfo.User>
+    )
+
+    companion object {
+        const val STATE_NOT_STARTED = "not_started"
+        const val STATE_PLAYING = "playing"
+        const val STATE_PAUSED = "paused"
+        const val STATE_ENDED = "ended"
+    }
 }

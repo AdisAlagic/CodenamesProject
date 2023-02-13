@@ -4,12 +4,14 @@ import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
+import com.adisalagic.codenames.client.api.objects.requests.RequestTimer
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 import org.apache.logging.log4j.LogManager
 import java.net.InetSocketAddress
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.logging.Logger
 import kotlin.concurrent.timer
 
 object Manager {
@@ -18,11 +20,20 @@ object Manager {
     private val eventConverter = EventConverter(
         onGamePlayerList = { eventListener?.onGamePlayerList(it) },
         onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) },
-        onGameState = { eventListener?.onGameState(it) }
+        onGameState = { eventListener?.onGameState(it) },
+        onGameTimer = {
+            var tempTime = it.getTime()
+            val dateTime = LocalDateTime.parse(it.timeStamp)
+            val now = LocalDateTime.now()
+            val substruction = Duration.between(dateTime, now).toMillis()
+            tempTime = tempTime.plus(substruction.toULong())
+            setTimer(tempTime)
+            log.debug("Timer received: $tempTime")
+        }
     )
     private var connectionListener: ConnectionListener? = null
     private var eventListener: EventListener? = null
-    private var timerCounter = 0L
+    private var timerCounter = 0uL
     private lateinit var timerObject: Timer
     private val socketThread = SocketThread(
         InetSocketAddress("84.2.212.165", 21721),
@@ -47,6 +58,7 @@ object Manager {
         socketThread.sendMessage(
             RequestJoin(RequestJoin.User(nickname))
         )
+        sendMessage(RequestTimer())
     }
 
     fun connect() {
@@ -71,9 +83,15 @@ object Manager {
         }
     }
 
-    fun getTimer(): Long {
+    private fun getTimer(): ULong {
         synchronized(timerObject) {
             return timerCounter
+        }
+    }
+
+    private fun setTimer(time: ULong){
+        synchronized(timerObject){
+            timerCounter = time
         }
     }
 
@@ -90,6 +108,7 @@ object Manager {
             while (true) {
                 while (queue.isNotEmpty()) {
                     val msg = queue.poll()
+                    log.debug("Got message: $msg")
                     eventConverter.provide(msg)
                 }
                 Thread.sleep(300)

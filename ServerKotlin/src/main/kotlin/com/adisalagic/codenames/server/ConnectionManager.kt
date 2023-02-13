@@ -3,8 +3,10 @@ package com.adisalagic.codenames.server
 import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.objects.EventConverter
 import com.adisalagic.codenames.server.objects.game.PlayerInfo
+import com.adisalagic.codenames.server.objects.game.TimerInfo
 import com.adisalagic.codenames.utils.asNetGameState
 import com.adisalagic.codenames.utils.isHost
+import java.time.LocalDateTime
 import java.util.*
 
 object ConnectionManager {
@@ -27,6 +29,12 @@ object ConnectionManager {
                             user.disconnect()
                         }
                     }
+                    /* Checks if user with the same socket trying to send another join request */
+                    if (!user.justConnected){
+                        if (eventConverter.isJoinRequest(msg)){
+                            return@UserHandler
+                        }
+                    }
                     eventConverter.provide(msg)
                 },
                 onDisconnect = { user, exception ->
@@ -37,7 +45,7 @@ object ConnectionManager {
             ))
         }
     )
-    private val connections = Vector<UserHandler>()
+    private val connections = Collections.synchronizedList(mutableListOf<UserHandler>())
 
     private val eventConverter = EventConverter(
         onRequestJoin = {
@@ -72,6 +80,21 @@ object ConnectionManager {
             if (it.isHost()){
                 GameManager.game.shuffleTeams()
             }
+        },
+        onRequestTimer = {
+            val time = TimerHandler.getTimer()
+            logger.debug("Timer sent: $time")
+            val timeInfo = TimerInfo(time.toString(), LocalDateTime.now().toString())
+            logger.debug(timeInfo.toString())
+            sendMessage(timeInfo)
+        },
+        onRequestPressWord = {
+            logger.debug("Press word request of player ${it.user.id}")
+            GameManager.game.pressWord(
+                wordId = it.word.id,
+                playerId = it.user.id,
+                pressed = it.word.pressed
+            )
         }
     )
 
@@ -83,9 +106,7 @@ object ConnectionManager {
         connections.forEach {
             logger.info("Disconnecting ${it.getAddress()}")
             it.disconnect()
-            synchronized(this) {
-                connections.remove(it)
-            }
+            connections.remove(it)
         }
         serverThread.stop()
     }

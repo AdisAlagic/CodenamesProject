@@ -2,8 +2,8 @@ package com.adisalagic.codenames.server.configuration
 
 import com.adisalagic.codenames.Logger
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
+import java.io.InputStreamReader
+import java.nio.ByteBuffer
 
 object ConfigurationManager {
     private val logger = Logger.getLogger(this::class)
@@ -51,15 +51,27 @@ object ConfigurationManager {
             dict.createNewFile()
             val out = dict.outputStream()
             try {
-                Files.copy(Path.of("src/main/resources/dict.txt"), out)
+                val stream = this::class.java.classLoader.getResourceAsStream("dict.txt")
+                val decoded = InputStreamReader(stream!!).readLines()
+                val writer = dict.bufferedWriter()
+                decoded.forEach { writer.write("$it\n") }
+                writer.apply { flush(); close() }
             }catch (e: Exception){
-                logger.error("Something broke when creating new dictionary:\n${e.message}")
+                logger.error("Something broke when creating new dictionary:\n${e}")
             }finally {
                 out.flush()
                 out.close()
             }
         }
-        dictionary = dict.readLines().filter { it.isNotBlank() }.map { it.lowercase() }.distinct()
+        val arr = mutableListOf<Byte>()
+        dict.inputStream().use {
+            do {
+                val buffer = ByteArray(1024)
+                val bytes = it.read(buffer, 0, buffer.size)
+                arr.addAll(buffer.asList())
+            }while (bytes != -1)
+        }
+        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size).split('\n')
         logger.info("Configuration loading success!")
     }
 

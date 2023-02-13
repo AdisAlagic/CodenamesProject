@@ -8,19 +8,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 import kotlin.random.Random
-
 @Composable
 fun WordGrid() {
     val model = ViewModelsStore.mainFrameViewModel
     val data by model.state.collectAsState()
     val size = 6
-    val visible = data.myself?.user?.role == "master"
     Column {
-        for (i in 1..size) {
+        for (i in 0 until size) {
             Row {
-                for (j in 1..6){
-                    WordBox("???", randomSide(), visible)
-                    Spacer(Modifier.width(10.dp))
+                for (j in 0 until size){
+                    if (data.gameState != null){
+                        val word = data.gameState!!.words[i * size + j]
+                        WordBox(word)
+                        Spacer(Modifier.width(10.dp))
+                    }
                 }
             }
             Spacer(Modifier.height(10.dp))

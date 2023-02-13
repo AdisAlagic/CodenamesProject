@@ -39,6 +39,9 @@ bin/
 .vscode/
 
 all.log
+dict.txt
+config.txt
+
 
 ### Mac OS ###
 .DS_Store

@@ -25,6 +25,8 @@ kotlin {
         }
         withJava()
     }
+
+
     sourceSets {
         val jvmMain by getting {
             dependencies {
@@ -46,9 +48,24 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
+            includeAllModules = true
+            modules("java.instrument", "java.sql", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "codenames"
             packageVersion = "1.0.0"
+            vendor = "AdisAlagic"
+            windows {
+                this.console = true
+                iconFile.set(project.file("CN.ico"))
+            }
+            linux {
+                iconFile.set(project.file("CN.png"))
+            }
+        }
+        buildTypes.release {
+            proguard {
+                configurationFiles.from("compose-desktop.pro")
+            }
         }
     }
 }

@@ -7,18 +7,14 @@
     <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/BaseAPI.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/SocketThread.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/PlayerList.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/GameState.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Login.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerCard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/PlayerList.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Score.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Score.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Spectators.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WindowControls.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WindowControls.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/LoginViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" afterDir="false" />
@@ -48,6 +44,17 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="ServerKotlin" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ServerKotlin" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ServerKotlin" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -87,6 +94,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Facets&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
@@ -105,10 +113,11 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="gradle run" />
+      <command value="gradle clean jlink" />
     </option>
   </component>
   <component name="RunManager" selected="Kotlin.Main">
-    <configuration name="ServerKotlin [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ServerKotlin [clean jlink]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -119,7 +128,71 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="run" />
+            <option value="clean" />
+            <option value="jlink" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ServerKotlin [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ServerKotlin [jlink]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jlink" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="ServerKotlin [suggestMergedModuleInfo]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="suggestMergedModuleInfo" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -139,7 +212,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.Main" />
-        <item itemvalue="Gradle.ServerKotlin [run]" />
+        <item itemvalue="Gradle.ServerKotlin [jlink]" />
+        <item itemvalue="Gradle.ServerKotlin [suggestMergedModuleInfo]" />
+        <item itemvalue="Gradle.ServerKotlin [clean jlink]" />
+        <item itemvalue="Gradle.ServerKotlin [jar]" />
       </list>
     </recent_temporary>
   </component>
@@ -156,6 +232,13 @@
       <workItem from="1675417932607" duration="213000" />
       <workItem from="1675420116258" duration="5973000" />
       <workItem from="1675590381114" duration="15839000" />
+      <workItem from="1675780899959" duration="18436000" />
+      <workItem from="1675855301841" duration="2116000" />
+      <workItem from="1675938302435" duration="7998000" />
+      <workItem from="1676141867653" duration="6072000" />
+      <workItem from="1676197577453" duration="606000" />
+      <workItem from="1676286106871" duration="7155000" />
+      <workItem from="1676321070713" duration="3646000" />
     </task>
     <servers />
   </component>
@@ -176,23 +259,18 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/UserHandler.kt</url>
-          <line>88</line>
-          <option name="timeStamp" value="4" />
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$USER_HOME$/.jdks/openjdk-18.0.2/lib/src.zip!/java.base/java/lang/Class.java</url>
+          <line>2961</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/gamelogic/Game.kt</url>
-          <line>96</line>
+          <line>144</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/com/adisalagic/codenames/server/gamelogic/Game.kt</url>
-          <line>107</line>
-          <option name="timeStamp" value="6" />
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -4,18 +4,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
 import com.adisalagic.codenames.client.components.LoginScreen
 import com.adisalagic.codenames.client.components.MainFrame
 import com.adisalagic.codenames.client.components.WindowControls
 import com.adisalagic.codenames.client.viewmodels.LoginViewModel
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -44,6 +42,7 @@ fun App(onCloseClick: () -> Unit, onCollapseClick: () -> Unit) {
 }
 
 fun main() = application {
+    System.setProperty("log4j2.disable.jmx", true.toString());
     var windowState by remember {
         mutableStateOf(
             WindowState(
@@ -55,6 +54,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         resizable = false,
         title = "Codenames",
+        icon = painterResource("CN.png"),
         undecorated = true,
         state = windowState
     ) {

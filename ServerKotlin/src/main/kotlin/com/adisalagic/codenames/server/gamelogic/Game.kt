@@ -2,6 +2,8 @@ package com.adisalagic.codenames.server.gamelogic
 
 import com.adisalagic.codenames.server.configuration.ConfigurationManager
 import com.adisalagic.codenames.utils.generateColor
+import com.adisalagic.codenames.utils.shouldPlayerBecomeMaster
+import java.util.Collections
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.random.Random
@@ -47,6 +49,7 @@ class Game(private val listener: GameListener) {
     }
 
     fun deleteUser(id: Int) {
+        checkIfAnotherWordIsClicked(playerId = id, -1)
         playerList.remove(playerList.find { it.id == id })
         listener.onPlayerListChanged(playerList)
     }
@@ -97,7 +100,7 @@ class Game(private val listener: GameListener) {
         val withOutSpecs = playerList.filter { it.role != Role.SPECTATOR }.toMutableList()
         val resultList = mutableListOf<Player>()
         val size = withOutSpecs.size
-        if (size == 0){
+        if (size == 0) {
             return
         }
         var redTeamSize = ceil((size / 2).toDouble()).toInt()
@@ -105,24 +108,35 @@ class Game(private val listener: GameListener) {
         var blueHasMaster = false
         var blueTeamSize = size - redTeamSize
         while (redTeamSize > 0 || blueTeamSize > 0) {
-            if (withOutSpecs.size == 0){
+            if (withOutSpecs.size == 0) {
                 break
             }
-            val side = Team.getRandom()
-            val isMaster = Random.nextBoolean()
+            var side = Team.getRandom()
+            if (blueTeamSize <= 0 && side == Team.BLUE){
+                side = Team.RED
+            }
+            if (redTeamSize <= 0 && side == Team.RED){
+                side = Team.BLUE
+            }
+            val isMaster = shouldPlayerBecomeMaster(Random.nextBoolean(), side, blueHasMaster, redHasMaster)
             var player = withOutSpecs.removeAt(Random.nextInt(0, withOutSpecs.size))
             if (side == Team.BLUE) {
-                blueTeamSize -= 1
-                blueHasMaster = isMaster
-            } else if (side == Team.RED) {
-                redTeamSize -= 1
-                redHasMaster = isMaster
+                blueTeamSize--
+                if (!blueHasMaster){
+                    blueHasMaster = isMaster
+                }
+            }
+            if (side == Team.RED) {
+                redTeamSize--
+                if (!redHasMaster){
+                    redHasMaster = isMaster
+                }
             }
             player = player.copy(
                 team = side,
-                role = if (isMaster){
+                role = if (isMaster) {
                     Role.MASTER
-                }else{
+                } else {
                     Role.PLAYER
                 }
             )
@@ -130,14 +144,14 @@ class Game(private val listener: GameListener) {
         }
         val red = resultList.filter { it.team == Team.RED }.toMutableList()
         val blue = resultList.filter { it.team == Team.BLUE }.toMutableList()
-        if (!redHasMaster){
-            if (red.size != 0){
+        if (!redHasMaster) {
+            if (red.size != 0) {
                 val index = Random.nextInt(0, red.size)
                 red[index] = red[index].copy(role = Role.MASTER)
             }
         }
-        if (!blueHasMaster){
-            if (blue.size != 0){
+        if (!blueHasMaster) {
+            if (blue.size != 0) {
                 val index = Random.nextInt(0, blue.size)
                 blue[index] = blue[index].copy(role = Role.MASTER)
             }
@@ -149,5 +163,52 @@ class Game(private val listener: GameListener) {
         playerList.clear()
         playerList.addAll(resultList)
         listener.onPlayerListChanged(playerList)
+    }
+
+    fun pressWord(wordId: Int, playerId: Int, pressed: Boolean) {
+        val player = playerList.find { it.id == playerId } ?: return
+        val word = gameState.words.find { it.id == wordId } ?: return
+        val list = mutableListOf<Player>().apply { addAll(word.usersPressed) }
+        list.apply {
+            if (pressed && list.indexOf(player) == -1) {
+                add(player)
+            } else {
+                remove(player)
+            }
+        }
+        val wordsList = mutableListOf<GameState.Word>().apply { addAll(gameState.words) }
+        val index = wordsList.indexOf(wordsList.find { it.id == wordId })
+        wordsList[index] = word.copy(usersPressed = list)
+        gameState = gameState.copy(words = wordsList)
+        checkWholeTeamClickedOnWord(wordId)
+        checkIfAnotherWordIsClicked(playerId, wordId)
+        listener.onGameStateChanged(gameState)
+    }
+
+    private fun checkWholeTeamClickedOnWord(wordId: Int) {
+        val word = gameState.words.find { wordId == it.id } ?: return
+        if (word.usersPressed.isEmpty()) {
+            return
+        }
+        val team = word.usersPressed[0].team
+        val teamList = playerList.filter { it.team == team }
+        if (word.usersPressed.size == teamList.size) {
+            //TODO Send word animation start command
+        }
+    }
+
+    private fun checkIfAnotherWordIsClicked(playerId: Int, ignoreWordId: Int) {
+        val finalList = gameState.words.toMutableList()
+        finalList.forEachIndexed { index, it ->
+            if (it.id == ignoreWordId){
+                return@forEachIndexed
+            }
+            val mutList = it.usersPressed.toMutableList()
+            val player = mutList.find { user -> user.id == playerId }
+            mutList.remove(player)
+            finalList[index] = it.copy(usersPressed = mutList)
+        }
+
+        gameState = gameState.copy(words = finalList)
     }
 }

@@ -4,10 +4,7 @@ import com.adisalagic.codenames.client.api.Manager
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
-import com.adisalagic.codenames.client.api.objects.requests.AdminRequest
-import com.adisalagic.codenames.client.api.objects.requests.RequestJoinTeam
-import com.adisalagic.codenames.client.api.objects.requests.RequestRestart
-import com.adisalagic.codenames.client.api.objects.requests.RequestShuffleTeams
+import com.adisalagic.codenames.client.api.objects.requests.*
 import com.adisalagic.codenames.client.components.Side
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -72,7 +69,7 @@ class MainFrameViewModel : ViewModel() {
     }
 
     fun sendBecomeSpectatorRequest(){
-        sendRequestJoinTeam("spectator", Side.NEUTRAL)
+        sendRequestJoinTeam("spectator", Side.WHITE)
     }
 
     fun sendRequestShuffleTeams(){
@@ -91,6 +88,13 @@ class MainFrameViewModel : ViewModel() {
         Manager.sendMessage(RequestRestart(AdminRequest.Host(me!!.user.id)))
     }
 
+    fun sendWordPressRequest(wordId: Int, pressed: Boolean){
+        Manager.sendMessage(RequestPressWord(
+            RequestPressWord.User(_state.value.myself!!.user.id),
+            RequestPressWord.Word(wordId, pressed)
+        ))
+    }
+
     private fun sendRequestJoinTeam(role: String, side: Side) {
         logger.debug("Creating request for side or team change")
         val me = _state.value.myself
@@ -98,7 +102,7 @@ class MainFrameViewModel : ViewModel() {
             Manager.disconnect()
         }
         var team = side.name.lowercase()
-        if (side == Side.NEUTRAL){
+        if (side == Side.WHITE){
             team = "none"
         }
         Manager.sendMessage(

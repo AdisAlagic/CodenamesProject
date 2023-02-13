@@ -9,17 +9,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adisalagic.codenames.client.api.objects.game.GameState
+import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
+import com.adisalagic.codenames.client.utils.parseColor
 import com.adisalagic.codenames.client.utils.random
+import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 import java.util.*
 import kotlin.concurrent.timer
+import kotlin.math.ceil
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview()
 @Composable
-fun WordBox(word: String, side: Side, visible: Boolean) {
+fun WordBox(word: GameState.Word) {
+    val model = ViewModelsStore.mainFrameViewModel
+    val data by model.state.collectAsState()
+
+    val visible = word.visible || data.myself?.user?.role == "master"
+    val side = Side.valueOf(word.side.uppercase())
+
     var progress by remember {
         mutableStateOf(0f)
     }
@@ -33,9 +45,15 @@ fun WordBox(word: String, side: Side, visible: Boolean) {
             .width(160.dp)
             .height(95.dp),
         onClick = {
-            if (visible){
+            if (visible) {
                 return@Card
             }
+            val isTeam = data.gameState?.turn?.team != data.myself?.user?.team
+            val isMaster = data.gameState?.turn?.role == "master"
+            if (isTeam || isMaster) {
+                return@Card
+            }
+            model.sendWordPressRequest(word.id, word.usersPressed.find { it.id == data.myself!!.user.id } == null)
             if (clicked) {
                 timer?.cancel()
                 progress = 0f
@@ -59,16 +77,21 @@ fun WordBox(word: String, side: Side, visible: Boolean) {
             modifier = Modifier.fillMaxSize()
         ) {
             Row {
-                PlayerIcon(Color.random())
-                PlayerIcon(Color.random())
-                PlayerIcon(Color.random())
+                word.usersPressed.forEach {
+                    PlayerIcon(Color.parseColor(it.color))
+                }
             }
         }
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            RText(text = word.uppercase(), fontColor = getTextColor(visible, side))
+            var string = word.name.uppercase()
+            if (string.length > 11) {
+                val half = ceil((string.length / 2).toDouble()).toInt()
+                string = string.substring(0, half) + "\n" + string.substring(half, string.length)
+            }
+            RText(text = string, fontColor = getTextColor(visible, side), textAlign = TextAlign.Center)
         }
         Box(
             contentAlignment = Alignment.BottomStart,
@@ -89,7 +112,7 @@ private fun getBackgroundTileColor(isVisible: Boolean = false, side: Side): Colo
             Side.BLUE -> BlueSide
             Side.RED -> RedSide
             Side.BLACK -> BlackSide
-            Side.NEUTRAL -> NeutralSide
+            Side.WHITE -> NeutralSide
         }
     }
     return ColorPlayerNotVisible
@@ -103,7 +126,7 @@ private fun getTextColor(visible: Boolean, side: Side): Color {
         Side.BLUE -> TextColorBlue
         Side.RED -> TextColorRed
         Side.BLACK -> TextColorBlack
-        Side.NEUTRAL -> TextColorNeutral
+        Side.WHITE -> TextColorNeutral
     }
 }
 
@@ -111,7 +134,7 @@ enum class Side {
     BLUE,
     RED,
     BLACK,
-    NEUTRAL,
+    WHITE,
 }
 
 

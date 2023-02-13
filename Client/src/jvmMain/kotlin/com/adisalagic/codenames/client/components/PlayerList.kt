@@ -15,12 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.utils.dashedBorder
 import com.adisalagic.codenames.client.utils.parseColor
-import com.adisalagic.codenames.client.utils.random
-import com.adisalagic.codenames.client.viewmodels.MainFrameViewModel
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 
 val model = ViewModelsStore.mainFrameViewModel
@@ -40,7 +39,7 @@ fun PlayerList(side: Side) {
                 }
 
                 Side.BLACK,
-                Side.NEUTRAL,
+                Side.WHITE,
                 Side.RED -> {
                     RedLine()
                     Players(side)
@@ -94,7 +93,7 @@ private fun Players(side: Side) {
                     }
 
                     Side.BLACK,
-                    Side.NEUTRAL -> {
+                    Side.WHITE -> {
                         throw IllegalArgumentException("You cant have BLACK or NEUTRAL side here!")
                     }
                 }
@@ -134,7 +133,7 @@ private fun Players(side: Side) {
                 Spacer(Modifier.height(5.dp))
             }
             val me = data.playerList.getPlayers(side.name.lowercase()).find { data.myself!!.user.id == it.id }
-            if (me == null){
+            if (me == null && data.gameState?.state != GameState.STATE_PLAYING){
                 FreeSlot("Стать игроком") {
                     model.sendBecomePlayerRequest(side)
                 }

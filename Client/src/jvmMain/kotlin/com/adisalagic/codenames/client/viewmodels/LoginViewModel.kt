@@ -20,6 +20,7 @@ class LoginViewModel : ViewModel() {
             override fun onConnectionSuccess(address: String) {
                 log.info("Connected to server: $address")
                 _state.update { it.copy(connectionState = ConnectionState.CONNECTED) }
+
             }
 
             override fun onConnecting() {

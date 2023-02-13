@@ -949,3 +949,5 @@ hs_err_pid*
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,csharp,rider,visualstudio,visualstudiocode,aspnetcore
+
+all.log

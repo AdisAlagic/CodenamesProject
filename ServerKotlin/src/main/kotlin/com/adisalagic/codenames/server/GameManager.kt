@@ -27,5 +27,8 @@ object GameManager {
     }
     val game = Game(listener)
 
+    fun resetGame(){
+        game.restartGame()
+    }
 
 }

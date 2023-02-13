@@ -2,9 +2,7 @@ package com.adisalagic.codenames.client.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,7 +42,7 @@ private fun ScoreBox(side: Side, score: String) {
                 Side.BLUE -> BlueSide
                 Side.RED -> RedSide
                 Side.BLACK -> BlackSide
-                Side.NEUTRAL -> NeutralSide
+                Side.WHITE -> NeutralSide
             }),
         contentAlignment = Alignment.Center
     ) {
@@ -54,7 +52,7 @@ private fun ScoreBox(side: Side, score: String) {
                 Side.BLUE -> TextColorBlue
                 Side.RED -> TextColorRed
                 Side.BLACK -> TextColorBlack
-                Side.NEUTRAL -> TextColorNeutral
+                Side.WHITE -> TextColorNeutral
             })
     }
 }

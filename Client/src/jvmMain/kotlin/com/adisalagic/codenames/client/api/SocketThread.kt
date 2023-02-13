@@ -83,7 +83,6 @@ class SocketThread(
                                 }
                                 builder.append(String(buffer, 0, needToRead))
                             } catch (_: SocketTimeoutException) {
-
                             } catch (e: IOException) {
                                 onDisconnect(DisconnectReason.HARD)
                                 connected = false
@@ -108,7 +107,10 @@ class SocketThread(
                         }
                     }
                 }
-            } catch (exception: Exception) {
+            } catch (_: SocketTimeoutException) {
+                log.debug("Nothing to worry about")
+            } catch (exception: IOException) {
+                log.error(exception.message)
                 onDisconnect(
                     if (hardDisconnect) {
                         DisconnectReason.HARD
