@@ -20,14 +20,18 @@ data class GameState(
         @SerializedName("score")
         val score: Int,
         @SerializedName("team")
-        val team: String
+        val team: String,
+        @SerializedName("logs")
+        val logs: List<String>
     )
 
     data class RedScore(
         @SerializedName("score")
         val score: Int,
         @SerializedName("team")
-        val team: String
+        val team: String,
+        @SerializedName("logs")
+        val logs: List<String>
     )
 
     data class Turn(
@@ -47,7 +51,9 @@ data class GameState(
         @SerializedName("visible")
         val visible: Boolean,
         @SerializedName("users_pressed")
-        val usersPressed: List<PlayerInfo.User>
+        val usersPressed: List<PlayerInfo.User>,
+        val animationStart: ULong? = null,
+        val animationEnd: ULong? = null
     )
 
     companion object {

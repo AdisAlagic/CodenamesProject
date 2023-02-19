@@ -53,6 +53,9 @@ class LoginViewModel : ViewModel() {
         ) }
     }
     fun connect(){
+        if (_state.value.address.isBlank() || _state.value.nickname.isBlank()){
+            return
+        }
         Manager.connect(_state.value.address, _state.value.nickname)
     }
     data class Data(val address: String, val nickname: String, val connectionState: ConnectionState)

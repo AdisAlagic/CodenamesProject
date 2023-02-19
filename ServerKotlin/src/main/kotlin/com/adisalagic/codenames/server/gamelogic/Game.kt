@@ -1,15 +1,20 @@
 package com.adisalagic.codenames.server.gamelogic
 
+import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.configuration.ConfigurationManager
 import com.adisalagic.codenames.utils.generateColor
 import com.adisalagic.codenames.utils.shouldPlayerBecomeMaster
 import java.util.Collections
+import java.util.Timer
+import kotlin.concurrent.timer
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.random.Random
 import kotlin.random.nextInt
 
 class Game(private val listener: GameListener) {
+    private var wordTemp: Timer? = null
+    private val logger = Logger.getLogger(this::class)
     private val playerList = ArrayList<Player>()
     private var host: String = ConfigurationManager.config.host
     private var gameState = GameState.reset()
@@ -70,7 +75,7 @@ class Game(private val listener: GameListener) {
         val player = Player(
             color = generateColor(id),
             id = id,
-            isHost = nick == host,
+            isHost = nick == host && !alreadyHasHost(),
             nickname = nick,
             role = Role.SPECTATOR,
             team = Team.NONE
@@ -112,23 +117,23 @@ class Game(private val listener: GameListener) {
                 break
             }
             var side = Team.getRandom()
-            if (blueTeamSize <= 0 && side == Team.BLUE){
+            if (blueTeamSize <= 0 && side == Team.BLUE) {
                 side = Team.RED
             }
-            if (redTeamSize <= 0 && side == Team.RED){
+            if (redTeamSize <= 0 && side == Team.RED) {
                 side = Team.BLUE
             }
             val isMaster = shouldPlayerBecomeMaster(Random.nextBoolean(), side, blueHasMaster, redHasMaster)
             var player = withOutSpecs.removeAt(Random.nextInt(0, withOutSpecs.size))
             if (side == Team.BLUE) {
                 blueTeamSize--
-                if (!blueHasMaster){
+                if (!blueHasMaster) {
                     blueHasMaster = isMaster
                 }
             }
             if (side == Team.RED) {
                 redTeamSize--
-                if (!redHasMaster){
+                if (!redHasMaster) {
                     redHasMaster = isMaster
                 }
             }
@@ -180,27 +185,45 @@ class Game(private val listener: GameListener) {
         val index = wordsList.indexOf(wordsList.find { it.id == wordId })
         wordsList[index] = word.copy(usersPressed = list)
         gameState = gameState.copy(words = wordsList)
-        checkWholeTeamClickedOnWord(wordId)
         checkIfAnotherWordIsClicked(playerId, wordId)
         listener.onGameStateChanged(gameState)
+        checkWholeTeamClickedOnWord(wordId)
     }
 
     private fun checkWholeTeamClickedOnWord(wordId: Int) {
-        val word = gameState.words.find { wordId == it.id } ?: return
+        var word = gameState.words.find { wordId == it.id } ?: return
         if (word.usersPressed.isEmpty()) {
             return
         }
         val team = word.usersPressed[0].team
         val teamList = playerList.filter { it.team == team }
         if (word.usersPressed.size == teamList.size) {
-            //TODO Send word animation start command
+            logger.debug("Whole team ${team.name} clicked on word ${word.name}")
+            listener.onStartOpenWord(word)
+            wordTemp = timer("Word opening", false, 4050, 1) {
+                word = word.copy(visible = true, usersPressed = emptyList())
+                wordTemp!!.cancel()
+                wordTemp = null
+                val words = gameState.words.toMutableList()
+                words[words.indexOf(gameState.words.find { wordId == it.id }!!)] = word
+                gameState = gameState.copy(words = words)
+                checkOpenedWord(word, team)
+                listener.onGameStateChanged(gameState)
+            }
+        } else {
+            if (wordTemp == null) {
+                return
+            }
+            wordTemp!!.cancel()
+            wordTemp = null
         }
+        listener.onGameStateChanged(gameState)
     }
 
     private fun checkIfAnotherWordIsClicked(playerId: Int, ignoreWordId: Int) {
         val finalList = gameState.words.toMutableList()
         finalList.forEachIndexed { index, it ->
-            if (it.id == ignoreWordId){
+            if (it.id == ignoreWordId) {
                 return@forEachIndexed
             }
             val mutList = it.usersPressed.toMutableList()
@@ -208,7 +231,104 @@ class Game(private val listener: GameListener) {
             mutList.remove(player)
             finalList[index] = it.copy(usersPressed = mutList)
         }
-
         gameState = gameState.copy(words = finalList)
+        if (wordTemp != null) {
+            wordTemp?.cancel()
+            wordTemp = null
+        }
+    }
+
+    fun provideLog(userId: Int, log: String) {
+        val player = playerList.find { it.id == userId }
+        if (player?.role != Role.MASTER) {
+            return
+        }
+        val redList = gameState.redScore.logs.toMutableList()
+        val blueList = gameState.blueScore.logs.toMutableList()
+        when (player.team) {
+            Team.RED -> redList.add(log)
+            Team.BLUE -> blueList.add(log)
+            Team.NONE -> return
+        }
+        gameState = gameState.copy(
+            blueScore = gameState.blueScore.copy(logs = blueList),
+            redScore = gameState.redScore.copy(logs = redList),
+            state = GameState.GeneralState.PLAYING
+        )
+        nextTurn()
+    }
+
+    private fun nextTurn() {
+        var turn = gameState.turn
+        turn = when (turn) {
+            GameState.Turn.BlueMaster -> GameState.Turn.BluePlayers
+            GameState.Turn.BluePlayers -> GameState.Turn.RedMaster
+            GameState.Turn.RedMaster -> GameState.Turn.RedPlayers
+            GameState.Turn.RedPlayers -> GameState.Turn.BlueMaster
+            else -> return
+        }
+        gameState = gameState.copy(turn = turn)
+        listener.onGameStateChanged(gameState)
+    }
+
+    private fun checkOpenedWord(word: GameState.Word, teamSelected: Team) {
+        when (word.side) {
+            GameState.Side.BLUE -> {
+                if (teamSelected == Team.BLUE) {
+                    //todo give 15 seconds
+                } else {
+                    nextTurn()
+                }
+                gameState =
+                    gameState.copy(blueScore = gameState.blueScore.copy(score = gameState.blueScore.score.dec()))
+            }
+
+            GameState.Side.RED -> {
+                if (teamSelected == Team.RED) {
+                    //todo give 15 seconds
+                } else {
+                    nextTurn()
+                }
+                gameState =
+                    gameState.copy(redScore = gameState.redScore.copy(score = gameState.redScore.score.dec()))
+            }
+
+            GameState.Side.WHITE -> nextTurn()
+            GameState.Side.BLACK -> gameState = gameState.copy(state = GameState.GeneralState.ENDED)
+        }
+        if (gameState.redScore.score == 0 || gameState.blueScore.score == 0) {
+
+            gameState = gameState.copy(
+                state = GameState.GeneralState.ENDED,
+            )
+        }
+        if (gameState.state == GameState.GeneralState.ENDED){
+            val words = gameState.words.toMutableList()
+            gameState = gameState.copy(
+                words = words.onEachIndexed { index, w ->
+                    words[index] = w.copy(visible = true)
+                }
+            )
+        }
+    }
+
+    fun pauseResume(){
+        val state = when(gameState.state){
+            GameState.GeneralState.NOT_STARTED -> GameState.GeneralState.NOT_STARTED
+            GameState.GeneralState.PLAYING -> GameState.GeneralState.PAUSED
+            GameState.GeneralState.PAUSED -> GameState.GeneralState.PLAYING
+            GameState.GeneralState.ENDED -> GameState.GeneralState.ENDED
+        }
+        gameState = gameState.copy(state = state)
+        listener.onGameStateChanged(gameState)
+    }
+
+    private fun alreadyHasHost(): Boolean{
+        playerList.forEach {
+            if (it.isHost){
+                return true
+            }
+        }
+        return false
     }
 }

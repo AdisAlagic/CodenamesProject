@@ -32,6 +32,8 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
+import com.adisalagic.codenames.client.api.objects.game.GameState
+import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import java.awt.Cursor
 import kotlin.random.Random
 
@@ -261,10 +263,25 @@ fun Modifier.Companion.defaultPointer(): Modifier {
     return this.pointerHoverIcon(DEFAULT_CURSOR)
 }
 
-fun Color.Companion.parseColor(color: String): Color{
+fun Color.Companion.parseColor(color: String): Color {
     return try {
         Color(color.replace("#", "FF").toLong(16))
-    }catch (_: Exception){
+    } catch (_: Exception) {
         Black
     }
+}
+
+fun GameState.Word.isWholeTeamClicked(playerList: PlayerList): Boolean {
+    if (usersPressed.isEmpty()){
+        return false
+    }
+    if (playerList.users.isEmpty()){
+        return false
+    }
+    val team = this.usersPressed[0].team
+    val teamUsers = playerList.users.filter { it.team == team }
+    if (teamUsers.isEmpty()){
+        return false
+    }
+    return usersPressed.size == teamUsers.size
 }

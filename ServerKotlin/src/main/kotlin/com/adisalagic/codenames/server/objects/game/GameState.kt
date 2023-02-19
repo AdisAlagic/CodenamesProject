@@ -20,14 +20,18 @@ data class GameState(
         @SerializedName("score")
         val score: Int,
         @SerializedName("team")
-        val team: String
+        val team: String,
+        @SerializedName("logs")
+        val logs: List<String>
     )
 
     data class RedScore(
         @SerializedName("score")
         val score: Int,
         @SerializedName("team")
-        val team: String
+        val team: String,
+        @SerializedName("logs")
+        val logs: List<String>
     )
 
     data class Turn(

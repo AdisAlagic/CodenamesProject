@@ -7,16 +7,22 @@ import androidx.compose.material.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.loadSvgPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.TextColor
+import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
+import java.io.File
 
 @Composable
 fun AdminPanel() {
-    var paused by remember {
-        mutableStateOf(true)
-    }
+    val model = ViewModelsStore.mainFrameViewModel
+    val data by model.state.collectAsState()
+    val paused = (data.gameState?.state == GameState.STATE_PAUSED)
+
     Box(
         modifier = Modifier.width(400.dp).height(50.dp).padding(bottom = 10.dp)
     ) {
@@ -34,7 +40,7 @@ fun AdminPanel() {
                     "pause.svg"
                 }
             ) {
-                paused = !paused
+                model.sendPauseResumeRequest()
             }
             ButtonIcon("Перемешать команды", "shuffle.svg") { model.sendRequestShuffleTeams() }
         }
@@ -44,6 +50,7 @@ fun AdminPanel() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ButtonIcon(description: String, resourse: String, onClick: () -> Unit) {
+    val file = File("./src/jvmMain/resources/$resourse")
     TooltipArea(
         tooltip = {
             Column{
@@ -60,7 +67,7 @@ private fun ButtonIcon(description: String, resourse: String, onClick: () -> Uni
             onClick = onClick,
         ) {
             Icon(
-                painter = painterResource(resourse),
+                painter = loadSvgPainter(file.inputStream(), LocalDensity.current),
                 contentDescription = null,
                 tint = TextColor
             )

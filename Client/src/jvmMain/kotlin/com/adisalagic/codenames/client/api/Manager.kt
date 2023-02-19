@@ -3,6 +3,7 @@ package com.adisalagic.codenames.client.api
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
+import com.adisalagic.codenames.client.api.objects.game.StartOpenWord
 import com.adisalagic.codenames.client.api.objects.requests.RequestJoin
 import com.adisalagic.codenames.client.api.objects.requests.RequestTimer
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
@@ -13,10 +14,12 @@ import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
 
 object Manager {
     private val queue = ConcurrentLinkedQueue<String>()
     private val log = LogManager.getLogger("Manager")
+    private val timerQueue = ConcurrentLinkedQueue<ULong>()
     private val eventConverter = EventConverter(
         onGamePlayerList = { eventListener?.onGamePlayerList(it) },
         onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) },
@@ -29,7 +32,8 @@ object Manager {
             tempTime = tempTime.plus(substruction.toULong())
             setTimer(tempTime)
             log.debug("Timer received: $tempTime")
-        }
+        },
+        onGameStartOpenWord = { eventListener?.onGameStartOpenWord(it) }
     )
     private var connectionListener: ConnectionListener? = null
     private var eventListener: EventListener? = null
@@ -61,7 +65,7 @@ object Manager {
         sendMessage(RequestTimer())
     }
 
-    fun connect() {
+    private fun connect() {
         connectionListener?.onConnecting()
         if (!socketThread.isStarted()) {
             socketThread.startListen()
@@ -73,6 +77,7 @@ object Manager {
     }
 
     private fun startCounting() {
+        var nextTime = ULong.MAX_VALUE;
         timerObject = timer(
             name = "In-game timer",
             daemon = false,
@@ -80,7 +85,21 @@ object Manager {
             period = 1L
         ) {
             timerCounter++
+            if (timerCounter >= nextTime){
+                nextTime = ULong.MAX_VALUE
+            }
+            if (timerQueue.isNotEmpty()){
+                nextTime = timerQueue.poll()
+            }
         }
+        val delay = (1000 * 60 * 2).toLong()
+        timerObject.schedule(
+            timerTask {
+                sendMessage(RequestTimer())
+            },
+            delay,
+            delay
+        )
     }
 
     private fun getTimer(): ULong {
@@ -89,8 +108,8 @@ object Manager {
         }
     }
 
-    private fun setTimer(time: ULong){
-        synchronized(timerObject){
+    private fun setTimer(time: ULong) {
+        synchronized(timerObject) {
             timerCounter = time
         }
     }
@@ -121,6 +140,9 @@ object Manager {
     }
 
 
+    fun interface EventTimer{
+        fun onTime()
+    }
     interface ConnectionListener {
         fun onConnectionSuccess(address: String)
 
@@ -134,6 +156,7 @@ object Manager {
 
         fun onGamePlayerInfo(playerInfo: PlayerInfo)
         fun onGameState(gameState: GameState)
+        fun onGameStartOpenWord(startOpenWord: StartOpenWord)
     }
 
 }

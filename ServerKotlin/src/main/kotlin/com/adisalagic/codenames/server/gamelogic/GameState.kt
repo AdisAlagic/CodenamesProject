@@ -30,9 +30,16 @@ data class GameState(
 
     data class Word(val id: Int, val name: String, val side: Side, val visible: Boolean, val usersPressed: List<Player>)
 
-    data class Turn(val team: Game.Team, val role: Game.Role)
+    data class Turn(val team: Game.Team, val role: Game.Role){
+        companion object {
+            val BlueMaster = Turn(Game.Team.BLUE, Game.Role.MASTER)
+            val RedMaster = Turn(Game.Team.RED, Game.Role.MASTER)
+            val BluePlayers = Turn(Game.Team.BLUE, Game.Role.PLAYER)
+            val RedPlayers = Turn(Game.Team.RED, Game.Role.PLAYER)
+        }
+    }
 
-    data class Score(val team: Game.Team, val score: Int)
+    data class Score(val team: Game.Team, val score: Int, val logs: List<String>)
 
     companion object {
         private const val startScore = 17
@@ -41,8 +48,8 @@ data class GameState(
             return GameState(
                 state = GeneralState.NOT_STARTED,
                 turn = Turn(Game.Team.getRandom(), Game.Role.MASTER),
-                blueScore = Score(Game.Team.BLUE, startScore),
-                redScore = Score(Game.Team.RED, startScore),
+                blueScore = Score(Game.Team.BLUE, startScore, emptyList()),
+                redScore = Score(Game.Team.RED, startScore, emptyList()),
                 words = createDictionaryWords(ConfigurationManager.dictionary)
             )
         }

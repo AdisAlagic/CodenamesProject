@@ -1,16 +1,28 @@
 package com.adisalagic.codenames.client.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -113,32 +125,58 @@ private fun Players(side: Side) {
                     playerColor = Color.parseColor(master.color),
                     direction = direction
                 )
-            } else {
+            } else if (data.gameState?.state != GameState.STATE_PLAYING){
                 FreeSlot("Стать ведущим") {
                     model.sendBecomeMasterRequest(side)
                 }
             }
-
             MasterLine()
-//            for (i in 1..10){
-//                PlayerCard("$i", Color.random(), direction)
-//                Spacer(Modifier.height(5.dp))
-//            }
-            data.playerList.getPlayers(side.name.lowercase()).forEach {
-                PlayerCard(
-                    playerName = it.nickname,
-                    playerColor = Color.parseColor(it.color),
-                    direction = direction
-                )
-                Spacer(Modifier.height(5.dp))
-            }
-            val me = data.playerList.getPlayers(side.name.lowercase()).find { data.myself!!.user.id == it.id }
-            if (me == null && data.gameState?.state != GameState.STATE_PLAYING){
+            val players = data.playerList.getPlayers(side.name.lowercase())
+            val me = players.find { data.myself?.user?.id == it.id }
+            if (me == null && data.gameState?.state != GameState.STATE_PLAYING) {
                 FreeSlot("Стать игроком") {
                     model.sendBecomePlayerRequest(side)
                 }
+                Spacer(Modifier.height(5.dp))
             }
-
+            val hght = if (me == null) {
+                420.dp
+            } else {
+                440.dp
+            }
+            LazyColumn(modifier = Modifier.height(hght)) {
+//                items(100){
+//                    PlayerCard("$it", Color.random(), direction)
+//                    Spacer(Modifier.height(5.dp))
+//                }
+                items(data.playerList.getPlayers(side.name.lowercase())) {
+                    PlayerCard(
+                        playerName = it.nickname,
+                        playerColor = Color.parseColor(it.color),
+                        direction = direction
+                    )
+                    Spacer(Modifier.height(5.dp))
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(100.dp),
+                contentAlignment = Alignment.BottomStart
+            ) {
+                Logs(
+                    when (side) {
+                        Side.BLUE -> data.gameState?.blueScore?.logs ?: emptyList()
+                        Side.RED -> data.gameState?.redScore?.logs ?: emptyList()
+                        Side.BLACK,
+                        Side.WHITE -> return
+                    },
+                    data.myself?.user?.role == "master" &&
+                            data.gameState?.turn?.team == data.myself?.user?.team &&
+                            data.myself?.user?.team == side.name.lowercase() &&
+                            data.gameState?.turn?.role == "master"
+                )
+            }
         }
     }
 }
@@ -177,7 +215,44 @@ private fun FreeSlot(slotText: String, onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun Logs() {
+private fun Logs(logList: List<String>, shouldType: Boolean) {
+    var text by remember {
+        mutableStateOf("")
+    }
 
+    Column {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            if (shouldType) {
+                BasicTextField(
+                    modifier = Modifier.onKeyEvent {
+                        if (it.key == Key.Enter && it.type == KeyEventType.KeyUp){
+                            model.sendLogRequest(text)
+                            text = ""
+                        }
+                        return@onKeyEvent true
+                    },
+                    value = text,
+                    textStyle = TextStyle(color = Color.White, fontSize = 20.sp),
+                    onValueChange = {
+                        text = it
+                    },
+                    singleLine = true,
+                ){
+                    Box(modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(30.dp).padding(5.dp)){
+                        it()
+                    }
+                }
+            } else {
+                RText(text = "Логи", fontColor = Color.White)
+            }
+        }
+        MasterLine()
+        LazyColumn(modifier = Modifier.fillMaxWidth().height(100.dp)) {
+            items(logList) {
+                RText(text = it, fontColor = Color.White, fontSize = 15.sp)
+            }
+        }
+    }
 }

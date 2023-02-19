@@ -1,24 +1,25 @@
 package com.adisalagic.codenames.client.api
 
-import com.adisalagic.codenames.client.api.objects.game.GameState
-import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
-import com.adisalagic.codenames.client.api.objects.game.PlayerList
-import com.adisalagic.codenames.client.api.objects.game.TimerInfo
+import com.adisalagic.codenames.client.api.objects.game.*
 import com.google.gson.Gson
 
 class EventConverter(
     private val onGamePlayerList: (PlayerList) -> Unit,
     private val onGamePlayerInfo: (PlayerInfo) -> Unit,
     private val onGameState: (GameState) -> Unit,
-    private val onGameTimer: (TimerInfo) -> Unit
+    private val onGameTimer: (TimerInfo) -> Unit,
+    private val onGameStartOpenWord: (StartOpenWord) -> Unit
 ) {
 
     private val gson = Gson()
 
-    private val GAME_PLAYERLIST = "game_playerlist"
-    private val GAME_PLAYERINFO = "game_playerinfo"
-    private val GAME_STATE = "game_state"
-    private val GAME_TIMER = "game_timer"
+    companion object {
+        private const val GAME_PLAYERLIST = "game_playerlist"
+        private const val GAME_PLAYERINFO = "game_playerinfo"
+        private const val GAME_STATE = "game_state"
+        private const val GAME_TIMER = "game_timer"
+        private const val GAME_START_OPENWORD = "game_start_openword"
+    }
 
     fun provide(obj: String) {
         if (obj.contains(GAME_PLAYERLIST)) {
@@ -29,6 +30,8 @@ class EventConverter(
             onGameState(gson.fromJson(obj, GameState::class.java))
         } else if (obj.contains(GAME_TIMER)){
             onGameTimer(gson.fromJson(obj, TimerInfo::class.java))
+        } else if (obj.contains(GAME_START_OPENWORD)){
+            onGameStartOpenWord(gson.fromJson(obj, StartOpenWord::class.java))
         }
     }
 }

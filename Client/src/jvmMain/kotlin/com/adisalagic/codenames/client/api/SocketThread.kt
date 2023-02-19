@@ -65,7 +65,7 @@ class SocketThread(
                     onConnectSuccess(socket.inetAddress.hostAddress)
                     val inStream = socket.getInputStream()
                     val dataInputStream = DataInputStream(inStream)
-                    var buffer: ByteArray?
+                    var buffer: ByteArray = ByteArray(1024)
                     val builder = StringBuilder()
                     while (connected) {
                         do {
@@ -83,6 +83,9 @@ class SocketThread(
                                 }
                                 builder.append(String(buffer, 0, needToRead))
                             } catch (_: SocketTimeoutException) {
+                                if (buffer.isNotEmpty()){
+                                    buffer.drop(buffer.size)
+                                }
                             } catch (e: IOException) {
                                 onDisconnect(DisconnectReason.HARD)
                                 connected = false

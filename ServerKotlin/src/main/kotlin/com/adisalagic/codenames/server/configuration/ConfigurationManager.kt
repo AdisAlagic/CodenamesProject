@@ -71,7 +71,7 @@ object ConfigurationManager {
                 arr.addAll(buffer.asList())
             }while (bytes != -1)
         }
-        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size).split('\n')
+        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size).split(System.lineSeparator())
         logger.info("Configuration loading success!")
     }
 

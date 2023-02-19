@@ -54,6 +54,7 @@ class UserHandler(
                             byteBuffer = ByteArray(needToRead)
                             val bytes = dataInputStream.read(byteBuffer!!, 0, needToRead)
                             if (bytes != needToRead) {
+                                logger.debug("$bytes != $needToRead")
                                 client.close()
                             }
                             builder.append(String(byteBuffer!!, 0, needToRead))

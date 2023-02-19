@@ -81,11 +81,13 @@ fun GameState.asNetGameState(): com.adisalagic.codenames.server.objects.game.Gam
     return com.adisalagic.codenames.server.objects.game.GameState(
         blueScore = com.adisalagic.codenames.server.objects.game.GameState.BlueScore(
             this.blueScore.score,
-            this.blueScore.team.name.lowercase()
+            this.blueScore.team.name.lowercase(),
+            this.blueScore.logs
         ),
         redScore = com.adisalagic.codenames.server.objects.game.GameState.RedScore(
             this.redScore.score,
-            this.redScore.team.name.lowercase()
+            this.redScore.team.name.lowercase(),
+            this.redScore.logs
         ),
         state = this.state.name.lowercase(),
         turn = com.adisalagic.codenames.server.objects.game.GameState.Turn(

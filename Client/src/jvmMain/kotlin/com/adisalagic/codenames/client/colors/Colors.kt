@@ -18,3 +18,5 @@ val TextColorNotVisible = BlackSide
 
 val TeamRedBackground = Color(0x41FF6450)
 val TeamBlueBackground = Color(0x4150BBFF)
+
+val DarkBackground = Color(0xFF202020)

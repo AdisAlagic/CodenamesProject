@@ -1,6 +1,5 @@
 package com.adisalagic.codenames.client.components
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -12,33 +11,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.adisalagic.codenames.client.api.objects.game.GameState
-import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
+import com.adisalagic.codenames.client.utils.isWholeTeamClicked
 import com.adisalagic.codenames.client.utils.parseColor
-import com.adisalagic.codenames.client.utils.random
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
+import org.apache.logging.log4j.LogManager
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.ceil
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview()
 @Composable
 fun WordBox(word: GameState.Word) {
-    val model = ViewModelsStore.mainFrameViewModel
+    val model = ViewModelsStore.mainFrameViewModel //compose-jb does not have method viewModel<>(), using object to store
     val data by model.state.collectAsState()
 
     val visible = word.visible || data.myself?.user?.role == "master"
     val side = Side.valueOf(word.side.uppercase())
 
+    val animationStart = word.animationStart
+    val animationEnd = word.animationEnd
+
     var progress by remember {
         mutableStateOf(0f)
     }
-    var clicked by remember {
-        mutableStateOf(false)
-    }
-    var timer: Timer? = null
+
     Card(
         modifier = Modifier
             .cursorPointer()
@@ -53,22 +51,16 @@ fun WordBox(word: GameState.Word) {
             if (isTeam || isMaster) {
                 return@Card
             }
-            model.sendWordPressRequest(word.id, word.usersPressed.find { it.id == data.myself!!.user.id } == null)
-            if (clicked) {
-                timer?.cancel()
-                progress = 0f
-                clicked = false
-            } else {
-                timer = animateProgress(
-                    1000.0,
-                    onProgress = {
-                        progress = it
-                    },
-                    onDone = {
-                        clicked = false
-                    })
-                clicked = true
+            if (data.gameState?.state != GameState.STATE_PLAYING){
+                return@Card
             }
+            if (model.wordTimer != null){
+                model.wordTimer?.cancel()
+                model.wordTimer = null
+                progress = 0f
+            }
+            model.sendWordPressRequest(word.id, word.usersPressed.find { it.id == data.myself!!.user.id } == null)
+
         },
         backgroundColor = getBackgroundTileColor(visible, side)
     ) {
@@ -104,6 +96,30 @@ fun WordBox(word: GameState.Word) {
             }
         }
     }
+
+    if (animationStart != null) {
+        val standardTimeAnimation = 4000uL
+        val animationTime: ULong = if (animationEnd != null) {
+            animationEnd - animationStart + 1000uL
+        } else {
+            standardTimeAnimation
+        }
+        if (!word.isWholeTeamClicked(data.playerList)){
+            model.wordTimer?.cancel()
+            model.wordTimer = null
+            progress = 0f
+            model.deleteAnimationTime(word)
+        } else {
+            model.wordTimer = animateProgress(animationTime.toDouble(), onProgress = {
+                progress = it
+            }, onDone = {
+                model.wordTimer = null
+                progress = 0f
+                model.deleteAnimationTime(word)
+            })
+        }
+    }
+
 }
 
 private fun getBackgroundTileColor(isVisible: Boolean = false, side: Side): Color {
@@ -138,15 +154,17 @@ enum class Side {
 }
 
 
-fun animateProgress(time: Double, onProgress: (progress: Float) -> Unit, onDone: () -> Unit): Timer {
+fun animateProgress(time: Double, onProgress: (progress: Float) -> Unit = {}, onDone: () -> Unit = {}): Timer {
     //somewhere is error, but I cant find it
-    var progress = 0.00001f
+    var progress: Float = 0f
     var est = 0.0 //time in milliseconds
+    val finalTime = time / 1.75
     return timer(initialDelay = 0L, period = 1L) {
-        if (est != time) {
-            val result = est / time
+        if (progress < 1) {
+            val result = est / (finalTime)
             progress = result.toFloat()
             onProgress(progress)
+//            LogManager.getLogger("WordBox").debug("Progress: $progress and est is $est")
             est++
         } else {
             onProgress(0f)

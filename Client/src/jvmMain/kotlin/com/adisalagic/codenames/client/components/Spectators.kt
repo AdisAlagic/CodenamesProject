@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.NeutralSide
 import com.adisalagic.codenames.client.colors.TextColor
 import com.adisalagic.codenames.client.colors.TextColorBlack
@@ -37,7 +38,8 @@ fun Spectators() {
                 )
                 Spacer(modifier = Modifier.width(2.dp))
             }
-            if (!data.myself?.user?.role.equals("spectator", true)) {
+            if (!data.myself?.user?.role.equals("spectator", true) &&
+                data.gameState?.state != GameState.STATE_PLAYING) {
                 RText(
                     text = "Стать наблюдателем",
                     fontSize = 15.sp,

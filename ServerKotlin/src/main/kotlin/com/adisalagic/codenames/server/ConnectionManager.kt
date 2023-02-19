@@ -95,6 +95,16 @@ object ConnectionManager {
                 playerId = it.user.id,
                 pressed = it.word.pressed
             )
+        },
+        onRequestSendLog = {
+            logger.debug("Log request from player ${it.user.id}")
+            GameManager.game.provideLog(it.user.id, it.log)
+        },
+        onRequestPauseResume = {
+            logger.debug("Pause/resume request from player ${it.user.id}")
+            if (it.isHost()){
+                GameManager.game.pauseResume()
+            }
         }
     )
 

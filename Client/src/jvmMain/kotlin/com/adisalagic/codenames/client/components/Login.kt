@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -47,11 +48,10 @@ fun LoginScreen() {
             modifier = Modifier
                 .width(400.dp)
                 .height(300.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(TextColorBlue)
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
-
-
                 TextBox(data.nickname, "Ник") {
                     loginModel.update(data.copy(nickname = it))
                 }
@@ -83,7 +83,7 @@ fun LoginScreen() {
 @Composable
 fun TextBox(init: String, title: String, onText: (text: String) -> Unit) {
     Column {
-        RText(text = title)
+        RText(text = title, fontColor = Color.White)
         Input(init, onText = onText)
     }
 }
@@ -106,12 +106,11 @@ fun Input(init: String, onText: (text: String) -> Unit) {
                 .padding(10.dp),
             singleLine = true,
             textStyle = TextStyle.Default.copy(
-                color = Color.White
+                color = Color.White,
             ),
-            value = if (value.isEmpty()) {
+            cursorBrush = SolidColor(Color.White),
+            value = value.ifEmpty {
                 ""
-            } else {
-                value
             },
             onValueChange = {
                 value = it

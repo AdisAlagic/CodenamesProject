@@ -11,6 +11,8 @@ class EventConverter(
     private val onRequestShuffleTeams: (RequestShuffleTeams) -> Unit,
     private val onRequestTimer: (RequestTimer) -> Unit,
     private val onRequestPressWord: (RequestPressWord) -> Unit,
+    private val onRequestSendLog: (RequestSendLog) -> Unit,
+    private val onRequestPauseResume: (RequestPauseResume) -> Unit
 ) {
 
     companion object {
@@ -20,6 +22,8 @@ class EventConverter(
         const val REQUEST_RESTART = "request_restart"
         const val REQUEST_SHUFFLETEAMS = "request_shuffleteams"
         const val REQUEST_TIMER = "request_timer"
+        const val REQUEST_SENDLOG = "request_sendlog"
+        const val REQUEST_PAUSERESUME = "request_pauseresume"
     }
 
     private val gson = Gson()
@@ -40,6 +44,10 @@ class EventConverter(
             onRequestTimer(gson.fromJson(obj, RequestTimer::class.java))
         } else if (obj.contains(REQUEST_PRESSWORD)){
             onRequestPressWord(gson.fromJson(obj, RequestPressWord::class.java))
+        } else if (obj.contains(REQUEST_SENDLOG)){
+            onRequestSendLog(gson.fromJson(obj, RequestSendLog::class.java))
+        } else if (obj.contains(REQUEST_PAUSERESUME)){
+            onRequestPauseResume(gson.fromJson(obj, RequestPauseResume::class.java))
         }
     }
 
