@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.adisalagic.codenames.client.api.objects.Team
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 
@@ -28,14 +29,14 @@ fun Score() {
             ScoreBox(
                 Side.RED,
                 data.gameState?.redScore?.score?.toString(10) ?: "??",
-                data.gameState?.turn?.team == "red"
+                data.gameState?.turn?.team == Team.RED
             )
             Spacer(modifier = Modifier.width(20.dp))
             Box(
                 modifier = Modifier.width(10.dp).height(2.dp).background(NeutralSide)
             )
             Spacer(modifier = Modifier.width(20.dp))
-            ScoreBox(Side.BLUE, data.gameState?.blueScore?.score?.toString(10) ?: "??", data.gameState?.turn?.team == "blue")
+            ScoreBox(Side.BLUE, data.gameState?.blueScore?.score?.toString(10) ?: "??", data.gameState?.turn?.team == Team.BLUE)
         }
     }
 }

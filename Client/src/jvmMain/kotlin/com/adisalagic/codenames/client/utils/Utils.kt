@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
+import com.adisalagic.codenames.client.components.Side
 import java.awt.Cursor
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -264,9 +265,9 @@ fun Modifier.Companion.defaultPointer(): Modifier {
     return this.pointerHoverIcon(DEFAULT_CURSOR)
 }
 
-fun Color.Companion.parseColor(color: String): Color {
+fun Color.Companion.parseColor(color: Long): Color {
     return try {
-        Color(color.replace("#", "FF").toLong(16))
+        Color(color)
     } catch (_: Exception) {
         Black
     }
@@ -300,4 +301,13 @@ fun ULong.asTimeString(): String {
             "0$seconds"
         } else { seconds }
     }"
+}
+
+fun Side.toIntSide(): Int {
+    return when(this){
+        Side.BLUE -> com.adisalagic.codenames.client.api.objects.Side.BLUE
+        Side.RED -> com.adisalagic.codenames.client.api.objects.Side.RED
+        Side.BLACK -> com.adisalagic.codenames.client.api.objects.Side.BLACK
+        Side.WHITE -> com.adisalagic.codenames.client.api.objects.Side.WHITE
+    }
 }

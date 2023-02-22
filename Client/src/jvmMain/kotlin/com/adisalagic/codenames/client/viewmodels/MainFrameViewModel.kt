@@ -1,12 +1,16 @@
 package com.adisalagic.codenames.client.viewmodels
 
+import PlayerInfo
+import RequestSendLog
 import com.adisalagic.codenames.client.api.Manager
+import com.adisalagic.codenames.client.api.objects.Role
+import com.adisalagic.codenames.client.api.objects.Team
 import com.adisalagic.codenames.client.api.objects.game.GameState
-import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.api.objects.game.StartOpenWord
 import com.adisalagic.codenames.client.api.objects.requests.*
 import com.adisalagic.codenames.client.components.Side
+import com.adisalagic.codenames.client.utils.toIntSide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -104,15 +108,15 @@ class MainFrameViewModel : ViewModel() {
     }
 
     fun sendBecomeMasterRequest(side: Side) {
-        sendRequestJoinTeam("master", side)
+        sendRequestJoinTeam(Role.MASTER, side)
     }
 
     fun sendBecomePlayerRequest(side: Side) {
-        sendRequestJoinTeam("player", side)
+        sendRequestJoinTeam(Role.PLAYER, side)
     }
 
     fun sendBecomeSpectatorRequest() {
-        sendRequestJoinTeam("spectator", Side.WHITE)
+        sendRequestJoinTeam(Role.SPECTATOR, Side.WHITE)
     }
 
     fun sendRequestShuffleTeams() {
@@ -160,21 +164,25 @@ class MainFrameViewModel : ViewModel() {
         )
     }
 
-    private fun sendRequestJoinTeam(role: String, side: Side) {
+    private fun sendRequestJoinTeam(role: Int, side: Side) {
         logger.debug("Creating request for side or team change")
         val me = _state.value.myself
         if (me == null) {
             Manager.disconnect()
         }
-        var team = side.name.lowercase()
+        var team = side.toIntSide()
         if (side == Side.WHITE) {
-            team = "none"
+            team = Team.NONE
         }
         Manager.sendMessage(
             RequestJoinTeam(
-                id = me!!.user.id,
-                role = role,
-                team = team
+                RequestJoinTeam.Request(
+                    RequestJoinTeam.Request.User(
+                        id = me!!.user.id,
+                        role = role,
+                        team = team
+                    )
+                )
             )
         )
     }

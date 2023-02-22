@@ -1,24 +1,23 @@
-package com.adisalagic.codenames.client.api.objects.game
-
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
 
 data class PlayerInfo(
     @SerializedName("user")
     val user: User
-): BaseAPI("game_playerinfo") {
+): BaseAPI(Event.GAME_PLAYER_INFO) {
     data class User(
         @SerializedName("color")
-        val color: String,
+        val color: Long, //FFFFFFFF ARGB
         @SerializedName("id")
         val id: Int,
         @SerializedName("isHost")
         val isHost: Boolean,
         @SerializedName("nickname")
-        val nickname: String,
+        val nickname: CharSequence,
         @SerializedName("role")
-        val role: String,
+        val role: Int,
         @SerializedName("team")
-        val team: String
+        val team: Int
     )
 }

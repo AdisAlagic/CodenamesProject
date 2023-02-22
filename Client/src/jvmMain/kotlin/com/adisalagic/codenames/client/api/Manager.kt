@@ -1,7 +1,7 @@
 package com.adisalagic.codenames.client.api
 
+import PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.GameState
-import com.adisalagic.codenames.client.api.objects.game.PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.api.objects.game.StartOpenWord
 import com.adisalagic.codenames.client.api.objects.requests.RequestJoin

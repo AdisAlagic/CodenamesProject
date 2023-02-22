@@ -1,5 +1,6 @@
 package com.adisalagic.codenames.client.api.objects.requests
 
-data class RequestPauseResume(
-    @Transient override val user: Host
-): AdminRequest("request_pauseresume", user)
+import com.adisalagic.codenames.client.api.objects.Event
+
+data class RequestPauseResume(override val user: Host) :
+    AdminRequest(Event.REQUEST_PAUSE_RESUME, user)

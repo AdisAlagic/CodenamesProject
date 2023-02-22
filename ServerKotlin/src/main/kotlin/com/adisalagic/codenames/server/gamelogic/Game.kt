@@ -5,6 +5,8 @@ import com.adisalagic.codenames.server.TimerHandler
 import com.adisalagic.codenames.server.configuration.ConfigurationManager
 import com.adisalagic.codenames.utils.generateColor
 import com.adisalagic.codenames.utils.shouldPlayerBecomeMaster
+import com.adisalagic.codenames.utils.toRole
+import com.adisalagic.codenames.utils.toTeam
 import java.util.Collections
 import java.util.Timer
 import kotlin.concurrent.timer
@@ -71,9 +73,9 @@ class Game(private val listener: GameListener) {
         listener.onPlayerListChanged(playerList)
     }
 
-    fun changeTeamOrRole(id: Int, role: String, team: String) {
+    fun changeTeamOrRole(id: Int, role: Int, team: Int) {
         val player = playerList.find { it.id == id }
-        editPlayer(player!!.copy(role = Role.valueOf(role.uppercase()), team = Team.valueOf(team.uppercase())))
+        editPlayer(player!!.copy(role = role.toRole(), team = team.toTeam()))
     }
 
     fun generatePlayer(id: Int, nick: String): Player {

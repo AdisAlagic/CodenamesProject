@@ -1,12 +1,13 @@
 package com.adisalagic.codenames.client.api.objects.requests
 
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
 
 data class RequestJoinTeam(
     @SerializedName("request")
     val request: Request
-): BaseAPI("request_jointeam") {
+): BaseAPI(Event.REQUEST_JOIN_TEAM) {
     data class Request(
         @SerializedName("user")
         val user: User
@@ -15,10 +16,9 @@ data class RequestJoinTeam(
             @SerializedName("id")
             val id: Int,
             @SerializedName("role")
-            val role: String,
+            val role: Int,
             @SerializedName("team")
-            val team: String
+            val team: Int
         )
     }
-    constructor(id: Int, role: String, team: String) : this(Request(Request.User(id, role, team)))
 }

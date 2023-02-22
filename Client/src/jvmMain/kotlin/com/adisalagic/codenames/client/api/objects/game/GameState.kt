@@ -2,52 +2,45 @@ package com.adisalagic.codenames.client.api.objects.game
 
 
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
 
 data class GameState(
     @SerializedName("blueScore")
-    val blueScore: BlueScore,
+    val blueScore: Score,
     @SerializedName("redScore")
-    val redScore: RedScore,
+    val redScore: Score,
     @SerializedName("state")
-    val state: String,
+    val state: Int,
     @SerializedName("turn")
     val turn: Turn,
     @SerializedName("words")
     val words: List<Word>
-) : BaseAPI("game_state") {
-    data class BlueScore(
-        @SerializedName("score")
-        val score: Int,
-        @SerializedName("team")
-        val team: String,
-        @SerializedName("logs")
-        val logs: List<String>
-    )
+) : BaseAPI(Event.GAME_STATE) {
 
-    data class RedScore(
+    data class Score(
         @SerializedName("score")
         val score: Int,
         @SerializedName("team")
-        val team: String,
+        val team: Int,
         @SerializedName("logs")
         val logs: List<String>
     )
 
     data class Turn(
         @SerializedName("role")
-        val role: String,
+        val role: Int,
         @SerializedName("team")
-        val team: String
+        val team: Int
     )
 
     data class Word(
         @SerializedName("id")
         val id: Int,
         @SerializedName("name")
-        val name: String,
+        val name: CharSequence,
         @SerializedName("side")
-        val side: String,
+        val side: Int,
         @SerializedName("visible")
         val visible: Boolean,
         @SerializedName("users_pressed")
@@ -55,11 +48,4 @@ data class GameState(
         val animationStart: ULong? = null,
         val animationEnd: ULong? = null
     )
-
-    companion object {
-        const val STATE_NOT_STARTED = "not_started"
-        const val STATE_PLAYING = "playing"
-        const val STATE_PAUSED = "paused"
-        const val STATE_ENDED = "ended"
-    }
 }

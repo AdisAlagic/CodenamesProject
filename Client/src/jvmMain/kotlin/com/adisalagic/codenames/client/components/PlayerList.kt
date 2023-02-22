@@ -1,6 +1,5 @@
 package com.adisalagic.codenames.client.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,26 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adisalagic.codenames.client.api.objects.game.GameState
+import com.adisalagic.codenames.client.api.objects.Role
+import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.colors.*
-import com.adisalagic.codenames.client.utils.asTimeString
-import com.adisalagic.codenames.client.utils.cursorPointer
-import com.adisalagic.codenames.client.utils.dashedBorder
-import com.adisalagic.codenames.client.utils.parseColor
+import com.adisalagic.codenames.client.utils.*
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
-import java.util.concurrent.TimeUnit
 
 val model = ViewModelsStore.mainFrameViewModel
 
@@ -124,22 +115,22 @@ private fun Players(side: Side) {
                 .padding(10.dp)
         ) {
             val masters = data.playerList.getMasters()
-            val master = masters.find { it.team.equals(side.name, true) }
+            val master = masters.find { it.team == side.toIntSide() }
             if (master != null) {
                 PlayerCard(
-                    playerName = master.nickname,
+                    playerName = master.nickname.toString(),
                     playerColor = Color.parseColor(master.color),
                     direction = direction
                 )
-            } else if (data.gameState?.state != GameState.STATE_PLAYING){
+            } else if (data.gameState?.state != State.STATE_PLAYING){
                 FreeSlot("Стать ведущим") {
                     model.sendBecomeMasterRequest(side)
                 }
             }
             MasterLine()
-            val players = data.playerList.getPlayers(side.name.lowercase())
+            val players = data.playerList.getPlayers(side.toIntSide())
             val me = players.find { data.myself?.user?.id == it.id }
-            if (me == null && data.gameState?.state != GameState.STATE_PLAYING) {
+            if (me == null && data.gameState?.state != State.STATE_PLAYING) {
                 FreeSlot("Стать игроком") {
                     model.sendBecomePlayerRequest(side)
                 }
@@ -155,9 +146,9 @@ private fun Players(side: Side) {
 //                    PlayerCard("$it", Color.random(), direction)
 //                    Spacer(Modifier.height(5.dp))
 //                }
-                items(data.playerList.getPlayers(side.name.lowercase())) {
+                items(data.playerList.getPlayers(side.toIntSide())) {
                     PlayerCard(
-                        playerName = it.nickname,
+                        playerName = it.nickname.toString(),
                         playerColor = Color.parseColor(it.color),
                         direction = direction
                     )
@@ -174,13 +165,12 @@ private fun Players(side: Side) {
                     when (side) {
                         Side.BLUE -> data.gameState?.blueScore?.logs ?: emptyList()
                         Side.RED -> data.gameState?.redScore?.logs ?: emptyList()
-                        Side.BLACK,
-                        Side.WHITE -> return
+                        else -> { emptyList() }
                     },
-                    data.myself?.user?.role == "master" &&
-                            data.gameState?.turn?.team == data.myself?.user?.team &&
-                            data.myself?.user?.team == side.name.lowercase() &&
-                            data.gameState?.turn?.role == "master"
+                    (data.myself?.user?.role == Role.MASTER) &&
+                            (data.gameState?.turn?.team == data.myself?.user?.team) &&
+                            (data.myself?.user?.team == side.toIntSide()) &&
+                            (data.gameState?.turn?.role == Role.MASTER)
                 )
             }
         }

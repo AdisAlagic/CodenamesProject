@@ -12,6 +12,7 @@ import androidx.compose.ui.res.loadSvgPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.TextColor
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
@@ -21,7 +22,7 @@ import java.io.File
 fun AdminPanel() {
     val model = ViewModelsStore.mainFrameViewModel
     val data by model.state.collectAsState()
-    val paused = (data.gameState?.state == GameState.STATE_PAUSED)
+    val paused = (data.gameState?.state == State.STATE_PAUSED)
 
     Box(
         modifier = Modifier.width(400.dp).height(50.dp).padding(bottom = 10.dp)

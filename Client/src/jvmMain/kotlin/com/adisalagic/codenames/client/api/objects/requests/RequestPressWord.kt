@@ -1,7 +1,7 @@
 package com.adisalagic.codenames.client.api.objects.requests
 
-
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
 
 data class RequestPressWord(
@@ -9,7 +9,7 @@ data class RequestPressWord(
     val user: User,
     @SerializedName("word")
     val word: Word
-): BaseAPI("request_pressword") {
+): BaseAPI(Event.REQUEST_PRESS_WORD) {
     data class User(
         @SerializedName("id")
         val id: Int

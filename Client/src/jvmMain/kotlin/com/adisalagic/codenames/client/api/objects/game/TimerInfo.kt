@@ -1,12 +1,12 @@
 package com.adisalagic.codenames.client.api.objects.game
 
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
 
-data class TimerInfo(val timer: String, val timeStamp: String) : BaseAPI("game_timer") {
-
+data class TimerInfo(val timer: ULong, val timeStamp: CharSequence): BaseAPI(Event.GAME_TIMER) {
     fun getTime(): ULong {
         return try {
-            timer.toULong()
+            timer
         } catch (e: Exception) {
             0uL
         }

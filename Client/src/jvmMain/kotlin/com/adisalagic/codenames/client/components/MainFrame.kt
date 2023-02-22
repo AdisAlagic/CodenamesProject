@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.RedSide
 import com.adisalagic.codenames.client.colors.TeamRedBackground
@@ -83,10 +84,10 @@ fun MainFrame() {
             contentAlignment = Alignment.TopStart){
             Box(modifier = Modifier.background(Color.Gray, RoundedCornerShape(5.dp))){
                 RText(modifier = Modifier.padding(5.dp), text = when(data.gameState?.state){
-                    GameState.STATE_NOT_STARTED -> "Не началась"
-                    GameState.STATE_ENDED -> "Закончена"
-                    GameState.STATE_PAUSED -> "Пауза"
-                    GameState.STATE_PLAYING -> "В процессе"
+                    State.STATE_NOT_STARTED -> "Не началась"
+                    State.STATE_ENDED -> "Закончена"
+                    State.STATE_PAUSED -> "Пауза"
+                    State.STATE_PLAYING -> "В процессе"
                     else -> {""}
                 }, fontColor = TextColor, fontSize = 17.sp)
             }

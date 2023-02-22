@@ -1,5 +1,6 @@
 package com.adisalagic.codenames.client.api
 
+import PlayerInfo
 import com.adisalagic.codenames.client.api.objects.game.*
 import com.google.gson.Gson
 

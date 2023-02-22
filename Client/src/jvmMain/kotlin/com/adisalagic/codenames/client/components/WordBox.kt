@@ -10,13 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.adisalagic.codenames.client.api.objects.Role
+import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.utils.isWholeTeamClicked
 import com.adisalagic.codenames.client.utils.parseColor
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
-import org.apache.logging.log4j.LogManager
+import java.nio.CharBuffer
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.math.ceil
@@ -27,8 +29,8 @@ fun WordBox(word: GameState.Word) {
     val model = ViewModelsStore.mainFrameViewModel //compose-jb does not have method viewModel<>(), using object to store
     val data by model.state.collectAsState()
 
-    val visible = word.visible || data.myself?.user?.role == "master"
-    val side = Side.valueOf(word.side.uppercase())
+    val visible = word.visible || data.myself?.user?.role == Role.MASTER
+    val side = Side.valueOf(word.side.toString().uppercase())
 
     val animationStart = word.animationStart
     val animationEnd = word.animationEnd
@@ -47,11 +49,11 @@ fun WordBox(word: GameState.Word) {
                 return@Card
             }
             val isTeam = data.gameState?.turn?.team != data.myself?.user?.team
-            val isMaster = data.gameState?.turn?.role == "master"
+            val isMaster = data.gameState?.turn?.role == Role.MASTER
             if (isTeam || isMaster) {
                 return@Card
             }
-            if (data.gameState?.state != GameState.STATE_PLAYING){
+            if (data.gameState?.state != State.STATE_PLAYING){
                 return@Card
             }
             if (model.wordTimer != null){
@@ -78,7 +80,7 @@ fun WordBox(word: GameState.Word) {
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            var string = word.name.uppercase()
+            var string = (word.name as String).uppercase()
             if (string.length > 11) {
                 val half = ceil((string.length / 2).toDouble()).toInt()
                 string = string.substring(0, half) + "\n" + string.substring(half, string.length)

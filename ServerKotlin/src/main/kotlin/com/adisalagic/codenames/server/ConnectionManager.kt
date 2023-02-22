@@ -6,6 +6,8 @@ import com.adisalagic.codenames.server.objects.game.PlayerInfo
 import com.adisalagic.codenames.server.objects.game.TimerInfo
 import com.adisalagic.codenames.utils.asNetGameState
 import com.adisalagic.codenames.utils.isHost
+import com.adisalagic.codenames.utils.toRoleInt
+import com.adisalagic.codenames.utils.toTeamInt
 import java.time.LocalDateTime
 import java.util.*
 
@@ -49,15 +51,15 @@ object ConnectionManager {
 
     private val eventConverter = EventConverter(
         onRequestJoin = {
-            val player = GameManager.game.generatePlayer(connections.size - 1, it.user.nickname)
+            val player = GameManager.game.generatePlayer(connections.size - 1, it.user.nickname.toString())
             val conPlayer = connections.find { user -> user.getId() == player.id }
             conPlayer?.sendMessage(PlayerInfo(PlayerInfo.User(
                 color = player.color,
                 id = player.id,
                 isHost = player.isHost,
                 nickname = player.nickname,
-                role = player.role.name.lowercase(),
-                team = player.team.name.lowercase()
+                role = player.role.toRoleInt(),
+                team = player.team.toTeamInt()
             )))
             conPlayer?.sendMessage(GameManager.game.getCurrentState().asNetGameState())
         },
@@ -84,7 +86,7 @@ object ConnectionManager {
         onRequestTimer = {
             val time = TimerHandler.getTimer()
             logger.debug("Timer sent: $time")
-            val timeInfo = TimerInfo(time.toString(), LocalDateTime.now().toString())
+            val timeInfo = TimerInfo(time, LocalDateTime.now().toString())
             logger.debug(timeInfo.toString())
             sendMessage(timeInfo)
         },
@@ -98,7 +100,7 @@ object ConnectionManager {
         },
         onRequestSendLog = {
             logger.debug("Log request from player ${it.user.id}")
-            GameManager.game.provideLog(it.user.id, it.log)
+            GameManager.game.provideLog(it.user.id, it.log.toString())
         },
         onRequestPauseResume = {
             logger.debug("Pause/resume request from player ${it.user.id}")

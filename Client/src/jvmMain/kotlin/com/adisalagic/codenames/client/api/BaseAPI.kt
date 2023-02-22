@@ -6,7 +6,7 @@ import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
 
-abstract class BaseAPI(open val event: String?): Packetable {
+abstract class BaseAPI(open val event: Int?): Packetable {
 
     override fun writeAsPacket(): ByteArray {
         val string = Gson().toJson(this)

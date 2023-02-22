@@ -1,11 +1,11 @@
-package com.adisalagic.codenames.client.api.objects.requests
-
 import com.adisalagic.codenames.client.api.BaseAPI
+import com.adisalagic.codenames.client.api.objects.Event
+import com.adisalagic.codenames.client.api.objects.requests.RequestPressWord
 import com.google.gson.annotations.SerializedName
 
 data class RequestSendLog(
     @SerializedName("log")
-    val log: String,
+    val log: CharSequence,
     @SerializedName("user")
     val user: RequestPressWord.User
-): BaseAPI("request_sendlog")
+): BaseAPI(Event.REQUEST_SEND_LOG)

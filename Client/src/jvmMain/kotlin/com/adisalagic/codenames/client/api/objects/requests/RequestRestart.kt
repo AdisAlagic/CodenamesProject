@@ -1,9 +1,9 @@
 package com.adisalagic.codenames.client.api.objects.requests
 
-
+import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
 
 data class RequestRestart(
     @SerializedName("user")
-    @Transient override val user: Host
-) : AdminRequest("request_restart", user)
+    override val user: Host
+): AdminRequest(Event.REQUEST_RESTART, user)

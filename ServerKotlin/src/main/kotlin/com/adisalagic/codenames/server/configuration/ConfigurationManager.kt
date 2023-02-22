@@ -3,11 +3,10 @@ package com.adisalagic.codenames.server.configuration
 import com.adisalagic.codenames.Logger
 import java.io.File
 import java.io.InputStreamReader
-import java.nio.ByteBuffer
 
 object ConfigurationManager {
     private val logger = Logger.getLogger(this::class)
-    var dictionary: List<String> = emptyList()
+    var dictionary: List<CharSequence> = emptyList()
     var config: Configuration = Configuration.DEFAULT
         get() {
             return field
@@ -71,7 +70,8 @@ object ConfigurationManager {
                 arr.addAll(buffer.asList())
             }while (bytes != -1)
         }
-        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size).split(System.lineSeparator())
+        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size)
+            .split(System.lineSeparator())
         logger.info("Configuration loading success!")
     }
 
