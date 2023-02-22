@@ -1,12 +1,14 @@
 package com.adisalagic.codenames.server.gamelogic
 
 import com.adisalagic.codenames.Logger
+import com.adisalagic.codenames.server.TimerHandler
 import com.adisalagic.codenames.server.configuration.ConfigurationManager
 import com.adisalagic.codenames.utils.generateColor
 import com.adisalagic.codenames.utils.shouldPlayerBecomeMaster
 import java.util.Collections
 import java.util.Timer
 import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.random.Random
@@ -18,6 +20,9 @@ class Game(private val listener: GameListener) {
     private val playerList = ArrayList<Player>()
     private var host: String = ConfigurationManager.config.host
     private var gameState = GameState.reset()
+    private var turnTimer: Timer? = null
+    @Volatile
+    private var turnTimerValue = 2 * 60 //seconds
 
     enum class Role {
         SPECTATOR,
@@ -268,6 +273,7 @@ class Game(private val listener: GameListener) {
             else -> return
         }
         gameState = gameState.copy(turn = turn)
+        recreateTimer()
         listener.onGameStateChanged(gameState)
     }
 
@@ -275,7 +281,7 @@ class Game(private val listener: GameListener) {
         when (word.side) {
             GameState.Side.BLUE -> {
                 if (teamSelected == Team.BLUE) {
-                    //todo give 15 seconds
+                    addFifteenSeconds()
                 } else {
                     nextTurn()
                 }
@@ -285,7 +291,7 @@ class Game(private val listener: GameListener) {
 
             GameState.Side.RED -> {
                 if (teamSelected == Team.RED) {
-                    //todo give 15 seconds
+                    addFifteenSeconds()
                 } else {
                     nextTurn()
                 }
@@ -302,7 +308,7 @@ class Game(private val listener: GameListener) {
                 state = GameState.GeneralState.ENDED,
             )
         }
-        if (gameState.state == GameState.GeneralState.ENDED){
+        if (gameState.state == GameState.GeneralState.ENDED) {
             val words = gameState.words.toMutableList()
             gameState = gameState.copy(
                 words = words.onEachIndexed { index, w ->
@@ -312,23 +318,77 @@ class Game(private val listener: GameListener) {
         }
     }
 
-    fun pauseResume(){
-        val state = when(gameState.state){
-            GameState.GeneralState.NOT_STARTED -> GameState.GeneralState.NOT_STARTED
-            GameState.GeneralState.PLAYING -> GameState.GeneralState.PAUSED
-            GameState.GeneralState.PAUSED -> GameState.GeneralState.PLAYING
+    fun pauseResume() {
+        val state = when (gameState.state) {
+            GameState.GeneralState.NOT_STARTED -> {
+                GameState.GeneralState.NOT_STARTED
+            }
+
+            GameState.GeneralState.PLAYING -> {
+                TimerHandler.stop()
+                turnTimer?.cancel()
+                turnTimer = null
+                GameState.GeneralState.PAUSED
+            }
+
+            GameState.GeneralState.PAUSED -> {
+                TimerHandler.resume()
+                recreateTimer(false)
+                GameState.GeneralState.PLAYING
+            }
+
             GameState.GeneralState.ENDED -> GameState.GeneralState.ENDED
         }
         gameState = gameState.copy(state = state)
+        if (wordTemp != null) {
+            wordTemp?.cancel()
+            wordTemp = null
+        }
+        sendTimerInfo()
         listener.onGameStateChanged(gameState)
     }
 
-    private fun alreadyHasHost(): Boolean{
+    private fun alreadyHasHost(): Boolean {
         playerList.forEach {
-            if (it.isHost){
+            if (it.isHost) {
                 return true
             }
         }
         return false
+    }
+
+    private fun createTurnTimer(): Timer {
+        return timer("TurnTimer", false, 0, 1000) {
+            turnTimerValue--
+        }.apply {
+            sendTimerInfo()
+            schedule(timerTask {
+                sendTimerInfo()
+            }, 0, 500)
+        }
+    }
+
+    private fun recreateTimer(dropTime: Boolean = true){
+        if (turnTimer != null){
+            turnTimer?.cancel()
+            turnTimer = null
+        }
+        if (dropTime){
+            turnTimerValue = 2 * 60
+        }
+        turnTimer = createTurnTimer()
+    }
+
+    private fun sendTimerInfo(){
+        listener.onTurnTimer(turnTimerValue, turnTimer != null)
+    }
+
+    private fun addFifteenSeconds(){
+        val fifteenSeconds = 15000
+        if (turnTimer != null){
+            synchronized(turnTimer!!){
+                turnTimerValue += fifteenSeconds
+            }
+        }
     }
 }

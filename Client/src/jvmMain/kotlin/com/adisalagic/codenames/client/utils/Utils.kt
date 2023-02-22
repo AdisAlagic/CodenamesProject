@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import java.awt.Cursor
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -284,4 +285,19 @@ fun GameState.Word.isWholeTeamClicked(playerList: PlayerList): Boolean {
         return false
     }
     return usersPressed.size == teamUsers.size
+}
+
+fun ULong.asTimeString(): String {
+    val timeAsLong = this.toLong()
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(timeAsLong)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(timeAsLong)
+    return "${
+        if (seconds < 10) {
+            "0$seconds"
+        } else { seconds }
+    }:${
+        if (minutes < 10) {
+            "0$seconds"
+        } else { seconds }
+    }"
 }

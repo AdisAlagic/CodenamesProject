@@ -29,10 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.*
+import com.adisalagic.codenames.client.utils.asTimeString
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.utils.dashedBorder
 import com.adisalagic.codenames.client.utils.parseColor
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
+import java.util.concurrent.TimeUnit
 
 val model = ViewModelsStore.mainFrameViewModel
 
@@ -43,22 +45,26 @@ fun PlayerList(side: Side) {
             .width(200.dp)
             .height(650.dp)
     ) {
-        Row {
-            when (side) {
-                Side.BLUE -> {
-                    Players(side)
-                    BlueLine()
+        Column {
+            
+            Row {
+                when (side) {
+                    Side.BLUE -> {
+                        Players(side)
+                        BlueLine()
+                    }
+
+                    Side.BLACK,
+                    Side.WHITE,
+                    Side.RED -> {
+                        RedLine()
+                        Players(side)
+                    }
                 }
 
-                Side.BLACK,
-                Side.WHITE,
-                Side.RED -> {
-                    RedLine()
-                    Players(side)
-                }
             }
-
         }
+
     }
 }
 
@@ -255,4 +261,10 @@ private fun Logs(logList: List<String>, shouldType: Boolean) {
             }
         }
     }
+}
+
+@Composable
+private fun Timer(timeInMillis: ULong){
+    val time = timeInMillis.asTimeString()
+    RText(text = time, fontColor = TextColor)
 }
