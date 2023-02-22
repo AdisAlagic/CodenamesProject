@@ -7,6 +7,6 @@ data class RequestJoin(
     val user: User
 ) : BaseAPI(Event.REQUEST_JOIN) {
     data class User(
-        val nickname: CharSequence
+        val nickname: String
     )
 }

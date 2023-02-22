@@ -24,7 +24,7 @@ data class GameState(
         @SerializedName("team")
         val team: Int,
         @SerializedName("logs")
-        val logs: List<CharSequence>
+        val logs: List<String>
     )
 
     data class Turn(
@@ -38,7 +38,7 @@ data class GameState(
         @SerializedName("id")
         val id: Int,
         @SerializedName("name")
-        val name: CharSequence,
+        val name: String,
         @SerializedName("side")
         val side: Int,
         @SerializedName("visible")

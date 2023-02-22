@@ -166,11 +166,3 @@ fun Int.toTeam(): Game.Team {
         else -> { Game.Team.NONE }
     }
 }
-
-fun CharBuffer.splitBySystemSeparator(): List<CharBuffer>{
-    val list = mutableListOf<CharBuffer>()
-    split(System.lineSeparator()).forEach {
-        list.add(CharBuffer.wrap(it))
-    }
-    return list
-}

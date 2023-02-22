@@ -6,7 +6,7 @@ import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
 
-abstract class BaseAPI(open val event: Int?): Packetable {
+abstract class BaseAPI(open val event: Int): Packetable {
 
     override fun writeAsPacket(): ByteArray {
         val string = Gson().toJson(this)
@@ -17,11 +17,12 @@ abstract class BaseAPI(open val event: Int?): Packetable {
         if (bytes.remaining() > 0){
             array = array.copyOfRange(0, array.size - (array.size - bytes.remaining())) //getting rid of zero bytes
         }
-        val size = array.size
+        val size = array.size + Int.SIZE_BYTES
         return ByteBuffer
             .allocate(Int.SIZE_BYTES + size)
             .order(ByteOrder.LITTLE_ENDIAN)
             .putInt(size)
+            .putInt(event)
             .put(bytes)
             .array()
     }

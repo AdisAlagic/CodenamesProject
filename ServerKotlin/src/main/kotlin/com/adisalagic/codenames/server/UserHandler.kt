@@ -18,7 +18,7 @@ import kotlin.concurrent.thread
 class UserHandler(
     client: Socket,
     private val id: Int,
-    onMessage: (UserHandler, String) -> Unit,
+    onMessage: (UserHandler, Int, String) -> Unit,
     private val onDisconnect: (UserHandler, Exception) -> Unit
 ) {
     private val logger = Logger.getLogger(this::class)
@@ -37,20 +37,24 @@ class UserHandler(
         val inStream = client.getInputStream()
         val dataInputStream = DataInputStream(inStream)
         val builder = StringBuilder()
+        var event: Int = -1
         try {
             client.use {
                 while (connected) {
                     do {
                         if (builder.isNotEmpty()) {
                             logger.debug("Got message from ${client.inetAddress}: $builder")
-                            onMessage(this, builder.toString())
+                            onMessage(this, event, builder.toString())
                             if (justConnected){
                                 justConnected = false
                             }
                             builder.setLength(0)
+                            event = -1
                         }
                         try{
-                            val needToRead = dataInputStream.readInt().flip()
+                            var needToRead = dataInputStream.readInt().flip()
+                            event = dataInputStream.readInt().flip()
+                            needToRead -= Int.SIZE_BYTES //we read event bytes already
                             byteBuffer = ByteArray(needToRead)
                             val bytes = dataInputStream.read(byteBuffer!!, 0, needToRead)
                             if (bytes != needToRead) {

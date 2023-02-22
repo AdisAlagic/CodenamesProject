@@ -17,6 +17,7 @@ import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.cursorPointer
 import com.adisalagic.codenames.client.utils.isWholeTeamClicked
 import com.adisalagic.codenames.client.utils.parseColor
+import com.adisalagic.codenames.client.utils.toSide
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
 import java.nio.CharBuffer
 import java.util.*
@@ -30,7 +31,7 @@ fun WordBox(word: GameState.Word) {
     val data by model.state.collectAsState()
 
     val visible = word.visible || data.myself?.user?.role == Role.MASTER
-    val side = Side.valueOf(word.side.toString().uppercase())
+    val side = word.side.toSide()
 
     val animationStart = word.animationStart
     val animationEnd = word.animationEnd

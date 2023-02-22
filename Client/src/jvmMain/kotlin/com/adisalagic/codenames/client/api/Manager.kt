@@ -17,7 +17,7 @@ import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 
 object Manager {
-    private val queue = ConcurrentLinkedQueue<String>()
+    private val queue = ConcurrentLinkedQueue<Pair<Int, String>>()
     private val log = LogManager.getLogger("Manager")
     private val timerQueue = ConcurrentLinkedQueue<ULong>()
     private val eventConverter = EventConverter(
@@ -41,7 +41,7 @@ object Manager {
     private lateinit var timerObject: Timer
     private val socketThread = SocketThread(
         InetSocketAddress("84.2.212.165", 21721),
-        onRead = queue::add,
+        onRead = { event, msg -> queue.add(event to msg) },
         onDisconnect = {
             connectionListener?.onDisconnect(it)
             ViewModelsStore.mainFrameViewModel.reset()
@@ -85,10 +85,10 @@ object Manager {
             period = 1L
         ) {
             timerCounter++
-            if (timerCounter >= nextTime){
+            if (timerCounter >= nextTime) {
                 nextTime = ULong.MAX_VALUE
             }
-            if (timerQueue.isNotEmpty()){
+            if (timerQueue.isNotEmpty()) {
                 nextTime = timerQueue.poll()
             }
         }
@@ -128,7 +128,7 @@ object Manager {
                 while (queue.isNotEmpty()) {
                     val msg = queue.poll()
                     log.debug("Got message: $msg")
-                    eventConverter.provide(msg)
+                    eventConverter.provide(msg.first, msg.second)
                 }
                 Thread.sleep(300)
             }
@@ -140,9 +140,10 @@ object Manager {
     }
 
 
-    fun interface EventTimer{
+    fun interface EventTimer {
         fun onTime()
     }
+
     interface ConnectionListener {
         fun onConnectionSuccess(address: String)
 

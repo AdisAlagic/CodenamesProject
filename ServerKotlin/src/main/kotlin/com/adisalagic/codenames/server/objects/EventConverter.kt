@@ -14,44 +14,22 @@ class EventConverter(
     private val onRequestSendLog: (RequestSendLog) -> Unit,
     private val onRequestPauseResume: (RequestPauseResume) -> Unit
 ) {
-
-    companion object {
-        const val REQUEST_PRESSWORD = "request_pressword"
-        const val REQUEST_JOIN = "request_join"
-        const val REQUEST_JOINTEAM = "request_jointeam"
-        const val REQUEST_RESTART = "request_restart"
-        const val REQUEST_SHUFFLETEAMS = "request_shuffleteams"
-        const val REQUEST_TIMER = "request_timer"
-        const val REQUEST_SENDLOG = "request_sendlog"
-        const val REQUEST_PAUSERESUME = "request_pauseresume"
-    }
-
     private val gson = Gson()
 
-
-
-
-    fun provide(obj: String){
-        if (obj.contains(REQUEST_JOINTEAM)){
-            onRequestJoinTeam(gson.fromJson(obj, RequestJoinTeam::class.java))
-        } else if (obj.contains(REQUEST_JOIN)){
-            onRequestJoin(gson.fromJson(obj, RequestJoin::class.java))
-        } else if (obj.contains(REQUEST_RESTART)){
-            onRequestRestart(gson.fromJson(obj, RequestRestart::class.java))
-        } else if (obj.contains(REQUEST_SHUFFLETEAMS)){
-            onRequestShuffleTeams(gson.fromJson(obj, RequestShuffleTeams::class.java))
-        } else if (obj.contains(REQUEST_TIMER)){
-            onRequestTimer(gson.fromJson(obj, RequestTimer::class.java))
-        } else if (obj.contains(REQUEST_PRESSWORD)){
-            onRequestPressWord(gson.fromJson(obj, RequestPressWord::class.java))
-        } else if (obj.contains(REQUEST_SENDLOG)){
-            onRequestSendLog(gson.fromJson(obj, RequestSendLog::class.java))
-        } else if (obj.contains(REQUEST_PAUSERESUME)){
-            onRequestPauseResume(gson.fromJson(obj, RequestPauseResume::class.java))
+    fun provide(event: Int, obj: String){
+        when (event) {
+            Event.REQUEST_PRESS_WORD -> onRequestPressWord(gson.fromJson(obj, RequestPressWord::class.java))
+            Event.REQUEST_JOIN -> onRequestJoin(gson.fromJson(obj, RequestJoin::class.java))
+            Event.REQUEST_JOIN_TEAM -> onRequestJoinTeam(gson.fromJson(obj, RequestJoinTeam::class.java))
+            Event.REQUEST_RESTART -> onRequestRestart(gson.fromJson(obj, RequestRestart::class.java))
+            Event.REQUEST_SHUFFLE_TEAMS -> onRequestShuffleTeams(gson.fromJson(obj, RequestShuffleTeams::class.java))
+            Event.REQUEST_TIMER -> onRequestTimer(gson.fromJson(obj, RequestTimer::class.java))
+            Event.REQUEST_SEND_LOG -> onRequestSendLog(gson.fromJson(obj, RequestSendLog::class.java))
+            Event.REQUEST_PAUSE_RESUME -> onRequestPauseResume(gson.fromJson(obj, RequestPauseResume::class.java))
         }
     }
 
-    fun isJoinRequest(obj: String): Boolean {
-        return obj.contains(REQUEST_JOIN) && !obj.contains(REQUEST_JOINTEAM)
+    fun isJoinRequest(event: Int): Boolean {
+        return Event.REQUEST_JOIN == event
     }
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RequestSendLog(
     @SerializedName("log")
-    val log: CharSequence,
+    val log: String,
     @SerializedName("user")
     val user: RequestPressWord.User
 ): BaseAPI(Event.REQUEST_SEND_LOG)

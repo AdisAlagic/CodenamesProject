@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class SocketThread(
     address: InetSocketAddress,
-    val onRead: (String) -> Unit = {},
+    val onRead: (Int, String) -> Unit = { _, _ -> },
     val onDisconnect: (DisconnectReason) -> Unit = {},
     val onConnectSuccess: (address: String) -> Unit = {}
 ) {
@@ -53,7 +53,7 @@ class SocketThread(
 
     private fun recreateThread(
         address: InetSocketAddress,
-        onRead: (String) -> Unit,
+        onRead: (Int, String) -> Unit,
         onDisconnect: (DisconnectReason) -> Unit,
         onConnectSuccess: (address: String) -> Unit
     ): Thread {
@@ -67,14 +67,17 @@ class SocketThread(
                     val dataInputStream = DataInputStream(inStream)
                     var buffer: ByteArray = ByteArray(1024)
                     val builder = StringBuilder()
+                    var event = -1
                     while (connected) {
                         do {
                             if (builder.isNotEmpty()) {
-                                onRead(builder.toString())
+                                onRead(event, builder.toString())
                                 builder.setLength(0)
                             }
                             try {
-                                val needToRead = flipInt(dataInputStream.readInt())
+                                var needToRead = flipInt(dataInputStream.readInt())
+                                event = flipInt(dataInputStream.readInt())
+                                needToRead -= Int.SIZE_BYTES
                                 buffer = ByteArray(needToRead)
                                 val bytes = dataInputStream.read(buffer, 0, needToRead)
                                 if (bytes != needToRead) {

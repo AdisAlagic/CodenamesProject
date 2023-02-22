@@ -11,6 +11,7 @@ import com.adisalagic.codenames.client.api.objects.game.StartOpenWord
 import com.adisalagic.codenames.client.api.objects.requests.*
 import com.adisalagic.codenames.client.components.Side
 import com.adisalagic.codenames.client.utils.toIntSide
+import com.adisalagic.codenames.client.utils.toTeamInt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -170,7 +171,7 @@ class MainFrameViewModel : ViewModel() {
         if (me == null) {
             Manager.disconnect()
         }
-        var team = side.toIntSide()
+        var team = side.toTeamInt()
         if (side == Side.WHITE) {
             team = Team.NONE
         }

@@ -115,10 +115,10 @@ private fun Players(side: Side) {
                 .padding(10.dp)
         ) {
             val masters = data.playerList.getMasters()
-            val master = masters.find { it.team == side.toIntSide() }
+            val master = masters.find { it.team == side.toTeamInt() }
             if (master != null) {
                 PlayerCard(
-                    playerName = master.nickname.toString(),
+                    playerName = master.nickname,
                     playerColor = Color.parseColor(master.color),
                     direction = direction
                 )
@@ -128,7 +128,7 @@ private fun Players(side: Side) {
                 }
             }
             MasterLine()
-            val players = data.playerList.getPlayers(side.toIntSide())
+            val players = data.playerList.getPlayers(side.toTeamInt())
             val me = players.find { data.myself?.user?.id == it.id }
             if (me == null && data.gameState?.state != State.STATE_PLAYING) {
                 FreeSlot("Стать игроком") {
@@ -146,7 +146,7 @@ private fun Players(side: Side) {
 //                    PlayerCard("$it", Color.random(), direction)
 //                    Spacer(Modifier.height(5.dp))
 //                }
-                items(data.playerList.getPlayers(side.toIntSide())) {
+                items(data.playerList.getPlayers(side.toTeamInt())) {
                     PlayerCard(
                         playerName = it.nickname.toString(),
                         playerColor = Color.parseColor(it.color),
@@ -169,7 +169,7 @@ private fun Players(side: Side) {
                     },
                     (data.myself?.user?.role == Role.MASTER) &&
                             (data.gameState?.turn?.team == data.myself?.user?.team) &&
-                            (data.myself?.user?.team == side.toIntSide()) &&
+                            (data.myself?.user?.team == side.toTeamInt()) &&
                             (data.gameState?.turn?.role == Role.MASTER)
                 )
             }

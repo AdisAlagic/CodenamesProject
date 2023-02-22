@@ -14,7 +14,7 @@ data class PlayerInfo(
         @SerializedName("isHost")
         val isHost: Boolean,
         @SerializedName("nickname")
-        val nickname: CharSequence,
+        val nickname: String,
         @SerializedName("role")
         val role: Int,
         @SerializedName("team")

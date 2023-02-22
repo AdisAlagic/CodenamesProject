@@ -23,21 +23,21 @@ object ConnectionManager {
             connections.add(UserHandler(
                 socket,
                 connections.size,
-                onMessage = { user, msg ->
+                onMessage = { user, event, msg ->
                     logger.info("${socket.inetAddress}: $msg")
                     if (user.justConnected) {
-                        val isJoin = eventConverter.isJoinRequest(msg)
+                        val isJoin = eventConverter.isJoinRequest(event)
                         if (!isJoin) {
                             user.disconnect()
                         }
                     }
                     /* Checks if user with the same socket trying to send another join request */
                     if (!user.justConnected){
-                        if (eventConverter.isJoinRequest(msg)){
+                        if (eventConverter.isJoinRequest(event)){
                             return@UserHandler
                         }
                     }
-                    eventConverter.provide(msg)
+                    eventConverter.provide(event, msg)
                 },
                 onDisconnect = { user, exception ->
                     logger.info("User ${user.getAddress()}:${user.getPort()} disconnected: ${exception.message} (${exception.cause})")

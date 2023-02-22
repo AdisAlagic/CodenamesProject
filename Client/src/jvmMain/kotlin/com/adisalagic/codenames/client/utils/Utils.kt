@@ -32,6 +32,7 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
+import com.adisalagic.codenames.client.api.objects.Team
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
 import com.adisalagic.codenames.client.components.Side
@@ -309,5 +310,24 @@ fun Side.toIntSide(): Int {
         Side.RED -> com.adisalagic.codenames.client.api.objects.Side.RED
         Side.BLACK -> com.adisalagic.codenames.client.api.objects.Side.BLACK
         Side.WHITE -> com.adisalagic.codenames.client.api.objects.Side.WHITE
+    }
+}
+
+fun Int.toSide(): Side{
+    return when (this) {
+        com.adisalagic.codenames.client.api.objects.Side.BLUE -> Side.BLUE
+        com.adisalagic.codenames.client.api.objects.Side.RED -> Side.RED
+        com.adisalagic.codenames.client.api.objects.Side.WHITE -> Side.WHITE
+        com.adisalagic.codenames.client.api.objects.Side.BLACK -> Side.BLACK
+        else -> {Side.WHITE}
+    }
+}
+
+fun Side.toTeamInt(): Int {
+    return when (this){
+        Side.BLUE -> Team.BLUE
+        Side.RED -> Team.RED
+        Side.BLACK,
+        Side.WHITE -> Team.NONE
     }
 }

@@ -38,7 +38,7 @@ data class GameState(
         @SerializedName("id")
         val id: Int,
         @SerializedName("name")
-        val name: CharSequence,
+        val name: String,
         @SerializedName("side")
         val side: Int,
         @SerializedName("visible")
