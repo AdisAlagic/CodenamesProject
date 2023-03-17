@@ -3,7 +3,6 @@ package com.adisalagic.codenames.client.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,20 +13,19 @@ import com.adisalagic.codenames.client.api.objects.Role
 import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.*
-import com.adisalagic.codenames.client.utils.cursorPointer
-import com.adisalagic.codenames.client.utils.isWholeTeamClicked
-import com.adisalagic.codenames.client.utils.parseColor
-import com.adisalagic.codenames.client.utils.toSide
+import com.adisalagic.codenames.client.utils.*
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
-import java.nio.CharBuffer
+import kotlinx.coroutines.*
 import java.util.*
-import kotlin.concurrent.timer
 import kotlin.math.ceil
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WordBox(word: GameState.Word) {
-    val model = ViewModelsStore.mainFrameViewModel //compose-jb does not have method viewModel<>(), using object to store
+    val model =
+        ViewModelsStore.mainFrameViewModel //compose-jb does not have method viewModel<>(), using object to store
     val data by model.state.collectAsState()
 
     val visible = word.visible || data.myself?.user?.role == Role.MASTER
@@ -35,10 +33,6 @@ fun WordBox(word: GameState.Word) {
 
     val animationStart = word.animationStart
     val animationEnd = word.animationEnd
-
-    var progress by remember {
-        mutableStateOf(0f)
-    }
 
     Card(
         modifier = Modifier
@@ -54,13 +48,13 @@ fun WordBox(word: GameState.Word) {
             if (isTeam || isMaster) {
                 return@Card
             }
-            if (data.gameState?.state != State.STATE_PLAYING){
+            if (data.gameState?.state != State.STATE_PLAYING) {
                 return@Card
             }
-            if (model.wordTimer != null){
-                model.wordTimer?.cancel()
+            if (model.wordTimer != null) {
+                model.wordTimer?.end()?.reset()
                 model.wordTimer = null
-                progress = 0f
+                model.updateWordTimerProgress(0f)
             }
             model.sendWordPressRequest(word.id, word.usersPressed.find { it.id == data.myself!!.user.id } == null)
 
@@ -81,22 +75,12 @@ fun WordBox(word: GameState.Word) {
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            var string = (word.name as String).uppercase()
+            var string = word.name.uppercase()
             if (string.length > 11) {
                 val half = ceil((string.length / 2).toDouble()).toInt()
                 string = string.substring(0, half) + "\n" + string.substring(half, string.length)
             }
             RText(text = string, fontColor = getTextColor(visible, side), textAlign = TextAlign.Center)
-        }
-        Box(
-            contentAlignment = Alignment.BottomStart,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            if (progress != 0f) {
-                LinearProgressIndicator(
-                    progress = progress
-                )
-            }
         }
     }
 
@@ -107,17 +91,17 @@ fun WordBox(word: GameState.Word) {
         } else {
             standardTimeAnimation
         }
-        if (!word.isWholeTeamClicked(data.playerList)){
-            model.wordTimer?.cancel()
+        model.wordTimer?.end()?.reset()
+        if (!word.isWholeTeamClicked(data.playerList)) {
             model.wordTimer = null
-            progress = 0f
+            model.updateWordTimerProgress(0f)
             model.deleteAnimationTime(word)
         } else {
             model.wordTimer = animateProgress(animationTime.toDouble(), onProgress = {
-                progress = it
+                model.updateWordTimerProgress(it)
             }, onDone = {
                 model.wordTimer = null
-                progress = 0f
+                model.updateWordTimerProgress(0f)
                 model.deleteAnimationTime(word)
             })
         }
@@ -157,22 +141,15 @@ enum class Side {
 }
 
 
-fun animateProgress(time: Double, onProgress: (progress: Float) -> Unit = {}, onDone: () -> Unit = {}): Timer {
+fun animateProgress(time: Double, onProgress: (progress: Float) -> Unit = {}, onDone: () -> Unit = {}): CountDownTimer {
     //somewhere is error, but I cant find it
     var progress: Float = 0f
     var est = 0.0 //time in milliseconds
-    val finalTime = time / 1.75
-    return timer(initialDelay = 0L, period = 1L) {
-        if (progress < 1) {
-            val result = est / (finalTime)
-            progress = result.toFloat()
-            onProgress(progress)
-//            LogManager.getLogger("WordBox").debug("Progress: $progress and est is $est")
-            est++
-        } else {
-            onProgress(0f)
-            onDone()
-            this.cancel()
-        }
-    }
+    val finalTime = time / 1.0
+    return CountDownTimer(
+        duration = finalTime.milliseconds,
+        eventTriggerInterval = 1.milliseconds,
+    ){
+        onProgress((it.toDouble(DurationUnit.MILLISECONDS).toFloat() / finalTime).toFloat())
+    }.start()
 }

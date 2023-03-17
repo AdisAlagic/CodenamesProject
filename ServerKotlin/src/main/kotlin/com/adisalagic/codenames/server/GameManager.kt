@@ -5,9 +5,7 @@ import com.adisalagic.codenames.server.gamelogic.Game
 import com.adisalagic.codenames.server.gamelogic.GameListener
 import com.adisalagic.codenames.server.gamelogic.GameState
 import com.adisalagic.codenames.server.gamelogic.Player
-import com.adisalagic.codenames.server.objects.game.PlayerInfo
-import com.adisalagic.codenames.server.objects.game.PlayerList
-import com.adisalagic.codenames.server.objects.game.StartOpenWord
+import com.adisalagic.codenames.server.objects.game.*
 import com.adisalagic.codenames.utils.asNetGameState
 import com.adisalagic.codenames.utils.asPlayerInfoItem
 
@@ -39,14 +37,14 @@ object GameManager {
             connection.sendMessage(StartOpenWord(StartOpenWord.Word(word.id, list)))
         }
 
-        override fun onTurnTimer(newTime: Int, isRunning: Boolean) {
+        override fun onStartSkipWord() {
+            logger.debug("Creating message for skip word animation start")
+            connection.sendMessage(StartSkipWord(4000))
+        }
 
+        override fun onTurnTimer(newTime: Int, isRunning: Boolean) {
+            connection.sendMessage(TurnTimer(TimerHandler.getTimer(), newTime, isRunning))
         }
     }
     val game = Game(listener)
-
-    fun resetGame(){
-        game.restartGame()
-    }
-
 }

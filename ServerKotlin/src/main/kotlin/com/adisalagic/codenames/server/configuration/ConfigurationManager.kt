@@ -3,6 +3,7 @@ package com.adisalagic.codenames.server.configuration
 import com.adisalagic.codenames.Logger
 import java.io.File
 import java.io.InputStreamReader
+import kotlin.system.exitProcess
 
 object ConfigurationManager {
     private val logger = Logger.getLogger(this::class)
@@ -22,7 +23,7 @@ object ConfigurationManager {
     fun loadConfig(fileName: String) {
         val file = File(fileName)
         if (!file.exists()) {
-            logger.warn("This is probably first launch. Change config at ${file.absolutePath} and restart the server")
+            logger.warn("This is probably the first launch. Change config at ${file.absolutePath} and restart the server")
             logger.debug("Config file does not exists. Creating default one...")
             val writer = file.bufferedWriter()
             file.createNewFile()
@@ -44,6 +45,7 @@ object ConfigurationManager {
             }
         }
         readConfig(file)
+        logger.info("Host name: ${config.host}")
         val dict = File(config.dictionary)
         if (!dict.exists()) {
             logger.debug("Dictionary does not exists. Creating new one...")
@@ -70,9 +72,13 @@ object ConfigurationManager {
                 arr.addAll(buffer.asList())
             }while (bytes != -1)
         }
-        dictionary = String(ByteArray(arr.size){return@ByteArray arr[it]}, 0, arr.size)
-            .split(System.lineSeparator())
-        logger.info("Configuration loading success!")
+        val ba = ByteArray(arr.size){return@ByteArray arr[it]}
+        dictionary = String(ba, 0, ba.size).replace("\r", "").split('\n')
+        if (dictionary.size < 36){
+            logger.error("Dictionary must be at least 36 words. Words must be one word per line. Words read: ${dictionary.size}")
+            exitProcess(0)
+        }
+        logger.info("Configuration loading success! Loaded ${dictionary.size} words")
     }
 
     private fun readConfig(conf: File) {

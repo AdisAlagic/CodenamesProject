@@ -23,7 +23,6 @@ class ServerThread(
             val client = serverSocket.accept()
             logger.info("Accepted client ${client.inetAddress}:${client.port}")
             onUserConnected(client)
-            Thread.sleep(200)
         }
     }
 

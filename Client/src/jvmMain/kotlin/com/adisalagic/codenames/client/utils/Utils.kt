@@ -275,18 +275,32 @@ fun Color.Companion.parseColor(color: Long): Color {
 }
 
 fun GameState.Word.isWholeTeamClicked(playerList: PlayerList): Boolean {
-    if (usersPressed.isEmpty()){
+    if (usersPressed.isEmpty()) {
+        return false
+    }
+    if (playerList.users.isEmpty()) {
+        return false
+    }
+    val team = this.usersPressed[0].team
+    val teamUsers = playerList.users.filter { it.team == team }
+    if (teamUsers.isEmpty()) {
+        return false
+    }
+    return usersPressed.size == teamUsers.size
+}
+
+fun <T> List<T>.wholeTeamSkipClicked(team: Int, playerList: PlayerList): Boolean {
+    if (this.isEmpty()){
         return false
     }
     if (playerList.users.isEmpty()){
         return false
     }
-    val team = this.usersPressed[0].team
     val teamUsers = playerList.users.filter { it.team == team }
     if (teamUsers.isEmpty()){
         return false
     }
-    return usersPressed.size == teamUsers.size
+    return teamUsers.size == this.size
 }
 
 fun ULong.asTimeString(): String {
@@ -296,16 +310,20 @@ fun ULong.asTimeString(): String {
     return "${
         if (seconds < 10) {
             "0$seconds"
-        } else { seconds }
+        } else {
+            seconds
+        }
     }:${
         if (minutes < 10) {
             "0$seconds"
-        } else { seconds }
+        } else {
+            seconds
+        }
     }"
 }
 
 fun Side.toIntSide(): Int {
-    return when(this){
+    return when (this) {
         Side.BLUE -> com.adisalagic.codenames.client.api.objects.Side.BLUE
         Side.RED -> com.adisalagic.codenames.client.api.objects.Side.RED
         Side.BLACK -> com.adisalagic.codenames.client.api.objects.Side.BLACK
@@ -313,21 +331,44 @@ fun Side.toIntSide(): Int {
     }
 }
 
-fun Int.toSide(): Side{
+fun Int.toSide(): Side {
     return when (this) {
         com.adisalagic.codenames.client.api.objects.Side.BLUE -> Side.BLUE
         com.adisalagic.codenames.client.api.objects.Side.RED -> Side.RED
         com.adisalagic.codenames.client.api.objects.Side.WHITE -> Side.WHITE
         com.adisalagic.codenames.client.api.objects.Side.BLACK -> Side.BLACK
-        else -> {Side.WHITE}
+        else -> {
+            Side.WHITE
+        }
     }
 }
 
 fun Side.toTeamInt(): Int {
-    return when (this){
+    return when (this) {
         Side.BLUE -> Team.BLUE
         Side.RED -> Team.RED
         Side.BLACK,
         Side.WHITE -> Team.NONE
     }
+}
+
+fun Int.asMinutesAndSeconds(): String {
+    val minutes = this / 60 / 1000
+    val seconds = (this - ((minutes * 60) * 1000)) / 1000
+    val milliseconds = this - minutes * 60 * 1000 - seconds * 1000
+    return "$minutes:${
+        if (seconds < 10) {
+            "0$seconds"
+        } else {
+            "$seconds"
+        }
+    }.${
+        if (milliseconds < 10) {
+            "00$milliseconds"
+        } else if (milliseconds < 100) {
+            "0$milliseconds"
+        } else {
+            milliseconds
+        }
+    }"
 }

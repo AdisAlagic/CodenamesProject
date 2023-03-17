@@ -15,7 +15,9 @@ data class GameState(
     @SerializedName("turn")
     val turn: Turn,
     @SerializedName("words")
-    val words: List<Word>
+    val words: List<Word>,
+    @SerializedName("skipWord")
+    val skipWord: List<PlayerInfo>
 ) : BaseAPI(Event.GAME_STATE) {
 
     data class Score(

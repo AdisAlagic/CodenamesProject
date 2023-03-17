@@ -24,7 +24,7 @@ object ConnectionManager {
                 socket,
                 connections.size,
                 onMessage = { user, event, msg ->
-                    logger.info("${socket.inetAddress}: $msg")
+                    logger.info("${socket.inetAddress.hostAddress}: $msg")
                     if (user.justConnected) {
                         val isJoin = eventConverter.isJoinRequest(event)
                         if (!isJoin) {

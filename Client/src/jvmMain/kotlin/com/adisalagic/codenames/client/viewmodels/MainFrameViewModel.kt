@@ -4,28 +4,38 @@ import PlayerInfo
 import RequestSendLog
 import com.adisalagic.codenames.client.api.Manager
 import com.adisalagic.codenames.client.api.objects.Role
+import com.adisalagic.codenames.client.api.objects.State
 import com.adisalagic.codenames.client.api.objects.Team
-import com.adisalagic.codenames.client.api.objects.game.GameState
-import com.adisalagic.codenames.client.api.objects.game.PlayerList
-import com.adisalagic.codenames.client.api.objects.game.StartOpenWord
+import com.adisalagic.codenames.client.api.objects.game.*
 import com.adisalagic.codenames.client.api.objects.requests.*
 import com.adisalagic.codenames.client.components.Side
-import com.adisalagic.codenames.client.utils.toIntSide
+import com.adisalagic.codenames.client.utils.CountDownTimer
 import com.adisalagic.codenames.client.utils.toTeamInt
+import com.adisalagic.codenames.client.utils.wholeTeamSkipClicked
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 
 class MainFrameViewModel : ViewModel() {
     private val _state = reset()
     val state = _state.asStateFlow()
+    private val wordTimerState = MutableStateFlow(WordTimer())
+    val wordState = wordTimerState.asStateFlow()
     val logger: Logger = LogManager.getLogger(this::class.simpleName)
-    var wordTimer: Timer? = null
+    var wordTimer: CountDownTimer? = null
 
+    init {
+        Manager.addTimeListener {
+            if (_state.value.gameState?.state == State.STATE_PLAYING){
+                wordTimerState.update { it.copy(turnTimer = it.turnTimer.dec()) }
+            }
+        }
+    }
 
     private val eventListener = object : Manager.EventListener {
         override fun onGamePlayerList(gamePlayerList: PlayerList) {
@@ -60,6 +70,8 @@ class MainFrameViewModel : ViewModel() {
         }
 
         override fun onGameState(gameState: GameState) {
+            wordTimer?.end()?.reset()
+            wordTimer = null
             var words = emptyList<GameState.Word>()
             if (_state.value.gameState != null) {
                 words = _state.value.gameState!!.words
@@ -73,19 +85,21 @@ class MainFrameViewModel : ViewModel() {
                 }
             }
             val finalState = gameState.copy(words = tempWords)
-            if (wordTimer != null){
-                wordTimer?.cancel()
-                wordTimer = null
-            }
             viewModelScope.launch {
                 _state.update { it.copy(gameState = finalState) }
             }
         }
 
         override fun onGameStartOpenWord(startOpenWord: StartOpenWord) {
-            var word = _state.value.gameState!!.words.find { startOpenWord.word.id == it.id } ?: return
+            wordTimer?.end()?.reset()
+            wordTimer = null
             val words = _state.value.gameState!!.words.toMutableList()
-            val index = words.indexOf(word)
+            var word = _state.value.gameState!!.words.find { startOpenWord.word.id == it.id } ?: return
+            var index = words.indexOf(word)
+            if (index == -1) {
+                word = _state.value.gameState!!.words.find { startOpenWord.word.id == it.id } ?: return
+                index = words.indexOf(word)
+            }
             word = word.copy(
                 animationStart = startOpenWord.word.times.first().toULong(),
                 animationEnd = startOpenWord.word.times.last().toULong()
@@ -94,6 +108,30 @@ class MainFrameViewModel : ViewModel() {
             val gameState = _state.value.gameState?.copy(words = words)
             _state.update { it.copy(gameState = gameState) }
         }
+
+        override fun onGameTurnTimer(turnTimer: TurnTimer) {
+            val time = Manager.getTimer()
+            val sub = time - turnTimer.gameTimer
+            if (sub >= 1000u) {
+                Manager.sendMessage(RequestTimer())
+            }
+            logger.debug("Client: $time; Server: ${turnTimer.gameTimer}; Sub: $sub")
+            wordTimerState.update { it.copy(turnTimer = turnTimer.turnTimer - sub.toInt()) }
+        }
+
+        override fun onGameStartSkipWord(startSkipWord: StartSkipWord) {
+            val state = _state.value
+            if (state.gameState?.skipWord?.wholeTeamSkipClicked(state.gameState.turn.team, state.playerList) == true){
+                wordTimer = CountDownTimer(startSkipWord.duration.milliseconds, 1.milliseconds){
+                    val millis = it.toDouble(DurationUnit.MILLISECONDS)
+                    val result = (millis / startSkipWord.duration).toFloat()
+                    logger.debug("Progress bar $result")
+                    updateWordTimerProgress(result)
+                }.start()
+            }else {
+                wordTimer?.end()?.reset()
+            }
+        }
     }
 
     fun disconnect() {
@@ -101,7 +139,12 @@ class MainFrameViewModel : ViewModel() {
     }
 
     fun reset(): MutableStateFlow<GameData> {
-        return MutableStateFlow(GameData(PlayerList(emptyList()), null, null))
+        if (_state == null){
+            return MutableStateFlow(GameData(playerList = PlayerList(emptyList()), myself = null, gameState = null))
+        }
+        _state.update { it.copy(playerList = PlayerList(emptyList()), myself = null, gameState = null) }
+        wordTimerState.update { it.copy(wordProgress = 0F, turnTimer = 0) }
+        return _state
     }
 
     init {
@@ -145,6 +188,8 @@ class MainFrameViewModel : ViewModel() {
     }
 
     fun sendWordPressRequest(wordId: Int, pressed: Boolean) {
+        wordTimer?.end()?.reset()
+        wordTimer = null
         Manager.sendMessage(
             RequestPressWord(
                 RequestPressWord.User(_state.value.myself!!.user.id),
@@ -201,5 +246,10 @@ class MainFrameViewModel : ViewModel() {
         }
     }
 
+    fun updateWordTimerProgress(value: Float) {
+        wordTimerState.update { it.copy(wordProgress = value) }
+    }
+
     data class GameData(val playerList: PlayerList, val myself: PlayerInfo?, val gameState: GameState?)
+    data class WordTimer(val wordProgress: Float = 0f, val turnTimer: Int = 0)
 }

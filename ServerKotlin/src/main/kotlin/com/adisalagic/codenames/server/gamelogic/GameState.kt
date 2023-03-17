@@ -8,7 +8,8 @@ data class GameState(
     val turn: Turn,
     val blueScore: Score,
     val redScore: Score,
-    val words: List<Word>
+    val words: List<Word>,
+    val skipWord: List<Player>
 ) {
     enum class GeneralState {
         NOT_STARTED,
@@ -50,7 +51,8 @@ data class GameState(
                 turn = Turn(Game.Team.getRandom(), Game.Role.MASTER),
                 blueScore = Score(Game.Team.BLUE, startScore, emptyList()),
                 redScore = Score(Game.Team.RED, startScore, emptyList()),
-                words = createDictionaryWords(ConfigurationManager.dictionary)
+                words = createDictionaryWords(ConfigurationManager.dictionary),
+                skipWord = emptyList()
             )
         }
     }

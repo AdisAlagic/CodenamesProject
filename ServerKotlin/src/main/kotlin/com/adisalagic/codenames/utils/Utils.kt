@@ -81,7 +81,8 @@ fun GameState.asNetGameState(): com.adisalagic.codenames.server.objects.game.Gam
             this.turn.role.toRoleInt(),
             this.turn.team.toTeamInt()
         ),
-        words = this.words.map { it.asNetWord() }
+        words = this.words.map { it.asNetWord() },
+        skipWord = this.skipWord.map { PlayerInfo(it.asPlayerInfoItem()) }
     )
 }
 

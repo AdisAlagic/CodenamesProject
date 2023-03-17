@@ -1,11 +1,12 @@
 package com.adisalagic.codenames.server
 
+import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 
 object TimerHandler {
     private var timerValue = 0uL
-    private var threadTimer = timer(
+    private var threadTimer = fixedRateTimer(
         name = "In-game timer",
         period = 1
     ) {
@@ -24,7 +25,7 @@ object TimerHandler {
     }
 
     fun resume() {
-        threadTimer = timer(
+        threadTimer = fixedRateTimer(
             name = "In-game timer",
             period = 1
         ) {

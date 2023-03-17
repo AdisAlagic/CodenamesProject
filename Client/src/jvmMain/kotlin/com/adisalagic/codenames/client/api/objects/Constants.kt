@@ -40,6 +40,8 @@ class Event private constructor() {
         const val GAME_PLAYER_LIST = 1002
         const val GAME_START_OPEN_WORD = 1003
         const val GAME_TIMER = 1004
+        const val GAME_TURN_TIMER = 1005
+        const val GAME_START_SKIP_WORD = 1006
 
         const val REQUEST_JOIN = 2000
         const val REQUEST_JOIN_TEAM = 2001
@@ -51,3 +53,5 @@ class Event private constructor() {
         const val REQUEST_TIMER = 2007
     }
 }
+
+const val SKIP_WORD_ID = 999999

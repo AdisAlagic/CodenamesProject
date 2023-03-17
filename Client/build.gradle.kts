@@ -1,5 +1,6 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
@@ -16,6 +17,7 @@ repositories {
     google()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://jitpack.io")
 }
 
 kotlin {
@@ -38,6 +40,7 @@ kotlin {
                 implementation("com.google.code.gson:gson:2.10.1")
                 implementation("org.apache.logging.log4j:log4j-api:2.19.0")
                 implementation("org.apache.logging.log4j:log4j-core:2.19.0")
+                implementation("com.github.goxr3plus:java-stream-player:10.0.2")
             }
         }
         val jvmTest by getting

@@ -1,6 +1,7 @@
 package com.adisalagic.codenames.client.api.objects.game
 
 
+import PlayerInfo
 import com.adisalagic.codenames.client.api.BaseAPI
 import com.adisalagic.codenames.client.api.objects.Event
 import com.google.gson.annotations.SerializedName
@@ -15,7 +16,9 @@ data class GameState(
     @SerializedName("turn")
     val turn: Turn,
     @SerializedName("words")
-    val words: List<Word>
+    val words: List<Word>,
+    @SerializedName("skipWord")
+    val skipWord: List<PlayerInfo>
 ) : BaseAPI(Event.GAME_STATE) {
 
     data class Score(

@@ -3,18 +3,22 @@ package com.adisalagic.codenames.server.gamelogic
 import com.adisalagic.codenames.Logger
 import com.adisalagic.codenames.server.TimerHandler
 import com.adisalagic.codenames.server.configuration.ConfigurationManager
+import com.adisalagic.codenames.server.objects.SKIP_WORD_ID
 import com.adisalagic.codenames.utils.generateColor
 import com.adisalagic.codenames.utils.shouldPlayerBecomeMaster
 import com.adisalagic.codenames.utils.toRole
 import com.adisalagic.codenames.utils.toTeam
 import java.util.Collections
 import java.util.Timer
+import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 import kotlin.math.ceil
 import kotlin.math.round
 import kotlin.random.Random
 import kotlin.random.nextInt
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 class Game(private val listener: GameListener) {
     private var wordTemp: Timer? = null
@@ -23,8 +27,10 @@ class Game(private val listener: GameListener) {
     private var host: String = ConfigurationManager.config.host
     private var gameState = GameState.reset()
     private var turnTimer: Timer? = null
+    private val twoMinutes = 2.minutes.toInt(DurationUnit.MILLISECONDS)
+
     @Volatile
-    private var turnTimerValue = 2 * 60 //seconds
+    private var turnTimerValue = twoMinutes
 
     enum class Role {
         SPECTATOR,
@@ -179,6 +185,13 @@ class Game(private val listener: GameListener) {
 
     fun pressWord(wordId: Int, playerId: Int, pressed: Boolean) {
         val player = playerList.find { it.id == playerId } ?: return
+        if (wordId == SKIP_WORD_ID) {
+            pressSkipWord(player, pressed)
+            checkIfAnotherWordIsClicked(playerId, wordId)
+            listener.onGameStateChanged(gameState)
+            checkWholeTeamClickedOnSkip()
+            return
+        }
         val word = gameState.words.find { it.id == wordId } ?: return
         val list = mutableListOf<Player>().apply { addAll(word.usersPressed) }
         list.apply {
@@ -197,6 +210,39 @@ class Game(private val listener: GameListener) {
         checkWholeTeamClickedOnWord(wordId)
     }
 
+    fun pressSkipWord(player: Player, pressed: Boolean) {
+        val skipList = gameState.skipWord.toMutableList()
+        skipList.apply {
+            if (pressed && gameState.skipWord.indexOf(player) == -1) {
+                add(player)
+            } else {
+                remove(player)
+            }
+        }
+        gameState = gameState.copy(skipWord = skipList)
+    }
+
+    private fun checkWholeTeamClickedOnSkip(){
+        val teamList = gameState.skipWord
+        if (teamList.isEmpty()) {
+            return
+        }
+        val team = teamList[0].team
+        val wholeTeam = playerList.filter { it.team == team }
+        if (teamList.size == wholeTeam.size){
+            logger.debug("Whole team ${team.name} wants to skip turn")
+            listener.onStartSkipWord()
+            wordTemp = fixedRateTimer("Skip turn", false, 4050, 1) {
+                nextTurn()
+                wordTemp?.cancel()
+                wordTemp = null
+            }
+        }else {
+            wordTemp?.cancel()
+            wordTemp = null
+        }
+    }
+
     private fun checkWholeTeamClickedOnWord(wordId: Int) {
         var word = gameState.words.find { wordId == it.id } ?: return
         if (word.usersPressed.isEmpty()) {
@@ -207,7 +253,7 @@ class Game(private val listener: GameListener) {
         if (word.usersPressed.size == teamList.size) {
             logger.debug("Whole team ${team.name} clicked on word ${word.name}")
             listener.onStartOpenWord(word)
-            wordTemp = timer("Word opening", false, 4050, 1) {
+            wordTemp = fixedRateTimer("Word opening", false, 4050, 1) {
                 word = word.copy(visible = true, usersPressed = emptyList())
                 wordTemp!!.cancel()
                 wordTemp = null
@@ -274,7 +320,7 @@ class Game(private val listener: GameListener) {
             GameState.Turn.RedPlayers -> GameState.Turn.BlueMaster
             else -> return
         }
-        gameState = gameState.copy(turn = turn)
+        gameState = gameState.copy(turn = turn, skipWord = emptyList())
         recreateTimer()
         listener.onGameStateChanged(gameState)
     }
@@ -360,36 +406,46 @@ class Game(private val listener: GameListener) {
     }
 
     private fun createTurnTimer(): Timer {
-        return timer("TurnTimer", false, 0, 1000) {
-            turnTimerValue--
+        return fixedRateTimer("TurnTimer", false, 0, 1) {
+            if (gameState.state == GameState.GeneralState.PLAYING) {
+                turnTimerValue--
+                if (turnTimerValue == 0) {
+                    nextTurn()
+                }
+            } else {
+                Thread.sleep(10)
+            }
         }.apply {
             sendTimerInfo()
-            schedule(timerTask {
+            scheduleAtFixedRate(timerTask {
                 sendTimerInfo()
-            }, 0, 500)
+            }, 0, 10000)
         }
     }
 
-    private fun recreateTimer(dropTime: Boolean = true){
-        if (turnTimer != null){
+    private fun recreateTimer(dropTime: Boolean = true) {
+        if (turnTimer != null) {
             turnTimer?.cancel()
             turnTimer = null
         }
-        if (dropTime){
-            turnTimerValue = 2 * 60
+        if (dropTime) {
+            turnTimerValue = twoMinutes
         }
         turnTimer = createTurnTimer()
     }
 
-    private fun sendTimerInfo(){
+    private fun sendTimerInfo() {
         listener.onTurnTimer(turnTimerValue, turnTimer != null)
     }
 
-    private fun addFifteenSeconds(){
+    private fun addFifteenSeconds() {
         val fifteenSeconds = 15000
-        if (turnTimer != null){
-            synchronized(turnTimer!!){
+        if (turnTimer != null) {
+            synchronized(turnTimer!!) {
                 turnTimerValue += fifteenSeconds
+                if (turnTimerValue >= twoMinutes) {
+                    turnTimerValue = twoMinutes
+                }
             }
         }
     }

@@ -31,6 +31,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+    implementation 'com.jcabi:jcabi-log:0.22.0'
+
 }
 
 test {
@@ -41,6 +44,7 @@ test {
 jar {
     manifest {
         attributes "Main-Class": "$mainClassName"
+        attributes "Multi-Release": true
     }
 
     from {
@@ -56,5 +60,5 @@ tasks.withType(Jar).configureEach {
     }
 }
 kotlin {
-//    jvmToolchain(8)
+    jvmToolchain(18)
 }
