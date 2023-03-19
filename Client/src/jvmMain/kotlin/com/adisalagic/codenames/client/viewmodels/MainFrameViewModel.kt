@@ -10,6 +10,7 @@ import com.adisalagic.codenames.client.api.objects.game.*
 import com.adisalagic.codenames.client.api.objects.requests.*
 import com.adisalagic.codenames.client.components.Side
 import com.adisalagic.codenames.client.utils.CountDownTimer
+import com.adisalagic.codenames.client.utils.SoundPlayer
 import com.adisalagic.codenames.client.utils.toTeamInt
 import com.adisalagic.codenames.client.utils.wholeTeamSkipClicked
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,6 +71,7 @@ class MainFrameViewModel : ViewModel() {
         }
 
         override fun onGameState(gameState: GameState) {
+            val tempState = _state.value
             wordTimer?.end()?.reset()
             wordTimer = null
             var words = emptyList<GameState.Word>()
@@ -85,6 +87,11 @@ class MainFrameViewModel : ViewModel() {
                 }
             }
             val finalState = gameState.copy(words = tempWords)
+            if (tempState.gameState?.state == State.STATE_NOT_STARTED && gameState.state == State.STATE_PLAYING){
+                SoundPlayer.playSound(SoundPlayer.GAME_START)
+            }else if (checkIfLogChanged(gameState)){
+                SoundPlayer.playSound(SoundPlayer.GAME_LOG_SEND)
+            }
             viewModelScope.launch {
                 _state.update { it.copy(gameState = finalState) }
             }
@@ -248,6 +255,13 @@ class MainFrameViewModel : ViewModel() {
 
     fun updateWordTimerProgress(value: Float) {
         wordTimerState.update { it.copy(wordProgress = value) }
+    }
+
+    private fun checkIfLogChanged(newState: GameState): Boolean {
+        val lastState = _state.value.gameState
+        val lastSize = lastState?.redScore?.logs?.size?.let { lastState.blueScore.logs.size.plus(it) } ?: return true
+        val newSize = newState.blueScore.logs.size + newState.redScore.logs.size
+        return lastSize < newSize
     }
 
     data class GameData(val playerList: PlayerList, val myself: PlayerInfo?, val gameState: GameState?)

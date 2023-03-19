@@ -5,18 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Client/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/EventConverter.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/Constants.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/GameState.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/objects/game/GameState.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/AdminPanel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/AdminPanel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/Grid.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/MainFrame.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/components/WordBox.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -266,6 +254,7 @@
       <workItem from="1678650543901" duration="5380000" />
       <workItem from="1678708441876" duration="847000" />
       <workItem from="1679054369592" duration="13122000" />
+      <workItem from="1679222737992" duration="2151000" />
     </task>
     <servers />
   </component>

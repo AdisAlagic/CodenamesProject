@@ -48,21 +48,7 @@ object ConfigurationManager {
         logger.info("Host name: ${config.host}")
         val dict = File(config.dictionary)
         if (!dict.exists()) {
-            logger.debug("Dictionary does not exists. Creating new one...")
-            dict.createNewFile()
-            val out = dict.outputStream()
-            try {
-                val stream = this::class.java.classLoader.getResourceAsStream("dict.txt")
-                val decoded = InputStreamReader(stream!!).readLines()
-                val writer = dict.bufferedWriter()
-                decoded.forEach { writer.write("$it\n") }
-                writer.apply { flush(); close() }
-            }catch (e: Exception){
-                logger.error("Something broke when creating new dictionary:\n${e}")
-            }finally {
-                out.flush()
-                out.close()
-            }
+            createDict(dict)
         }
         val arr = mutableListOf<Byte>()
         dict.inputStream().use {
@@ -101,6 +87,24 @@ object ConfigurationManager {
                 logger.warn("Configuration were not read:\n${e.message}\nUsing default")
                 config = Configuration.DEFAULT
             }
+        }
+    }
+
+    private fun createDict(dict: File) {
+        logger.debug("Dictionary does not exists. Creating new one...")
+        dict.createNewFile()
+        val out = dict.outputStream()
+        try {
+            val stream = this::class.java.classLoader.getResourceAsStream("dict.txt")
+            val decoded = InputStreamReader(stream!!).readLines()
+            val writer = dict.bufferedWriter()
+            decoded.forEach { writer.write("$it\n") }
+            writer.apply { flush(); close() }
+        }catch (e: Exception){
+            logger.error("Something broke when creating new dictionary:\n${e}")
+        }finally {
+            out.flush()
+            out.close()
         }
     }
 }
