@@ -11,8 +11,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
 import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.timerTask
 import kotlin.time.Duration.Companion.minutes
@@ -22,7 +20,9 @@ object Manager {
     private val queue = ConcurrentLinkedQueue<Pair<Int, String>>()
     private val log = LogManager.getLogger("Manager")
     private val timerQueue = ConcurrentLinkedQueue<ULong>()
-    private var timerListeners: MutableList<EventTimer> = CopyOnWriteArrayList()
+    private val idsToDeleteQueue = ConcurrentLinkedQueue<Int>()
+    private var queueToAddListeners = ConcurrentLinkedQueue<EventTimer>()
+    private var timerListeners: MutableList<EventTimer> = ArrayList()
     private val eventConverter = EventConverter(
         onGamePlayerList = { eventListener?.onGamePlayerList(it) },
         onGamePlayerInfo = { eventListener?.onGamePlayerInfo(it) },
@@ -89,10 +89,16 @@ object Manager {
             period = 1L
         ) {
             timerCounter++
+            while (idsToDeleteQueue.isNotEmpty()){
+                timerListeners.removeAt(idsToDeleteQueue.poll())
+            }
+            while (queueToAddListeners.isNotEmpty()) {
+                timerListeners.add(queueToAddListeners.poll())
+            }
             timerListeners.forEach { it.onTime(timerCounter) }
             while (queue.isNotEmpty()) {
                 val msg = queue.poll()
-                log.debug("Got message: $msg")
+                log.debug("Got message: {}", msg)
                 eventConverter.provide(msg.first, msg.second)
             }
             if (timerCounter >= nextTime) {
@@ -136,12 +142,15 @@ object Manager {
         socketThread.sendMessage(packetable)
     }
 
-    fun addTimeListener(eventTimer: EventTimer){
-       timerListeners.add(eventTimer)
+    fun addTimeListener(eventTimer: EventTimer) {
+        queueToAddListeners.add(eventTimer)
     }
 
-    fun removeTimeListener(eventTimer: EventTimer){
-        timerListeners.remove(eventTimer)
+    fun removeTimeListener(eventTimer: EventTimer) {
+        val id = timerListeners.indexOf(eventTimer)
+        if (id != -1) {
+            idsToDeleteQueue.add(id)
+        }
     }
 
     fun interface EventTimer {

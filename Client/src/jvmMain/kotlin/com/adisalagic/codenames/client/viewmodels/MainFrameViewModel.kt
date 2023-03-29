@@ -132,7 +132,7 @@ class MainFrameViewModel : ViewModel() {
                 wordTimer = CountDownTimer(startSkipWord.duration.milliseconds, 1.milliseconds){
                     val millis = it.toDouble(DurationUnit.MILLISECONDS)
                     val result = (millis / startSkipWord.duration).toFloat()
-                    logger.debug("Progress bar $result")
+//                    logger.debug("Progress bar $result")
                     updateWordTimerProgress(result)
                 }.start()
             }else {

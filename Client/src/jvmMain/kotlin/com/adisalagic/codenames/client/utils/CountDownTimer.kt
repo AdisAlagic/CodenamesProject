@@ -22,15 +22,15 @@ class CountDownTimer(
         val all = duration.toInt(DurationUnit.MILLISECONDS)
         var est = 0
         countDownTimer = Manager.EventTimer {
-            logger.debug("Progress: $est / $all")
+//            logger.debug("Progress: $est / $all")
             onTick(est.milliseconds)
             if (est == all){
                 Manager.removeTimeListener(countDownTimer!!)
             }
             est++
         }
-        Manager.addTimeListener(countDownTimer!!)
         logger.debug("Subscribing")
+        Manager.addTimeListener(countDownTimer!!)
         return this
     }
 

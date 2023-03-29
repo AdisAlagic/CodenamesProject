@@ -3,7 +3,7 @@ package com.adisalagic.codenames.server.configuration
 data class Configuration(
     val host: String = "",
     val port: Int = 21721,
-    var ip: String = "",
+    val ip: String = "",
     val debug: Boolean = false,
     val dictionary: String
 ){

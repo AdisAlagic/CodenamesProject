@@ -222,14 +222,14 @@ class Game(private val listener: GameListener) {
         gameState = gameState.copy(skipWord = skipList)
     }
 
-    private fun checkWholeTeamClickedOnSkip(){
+    private fun checkWholeTeamClickedOnSkip() {
         val teamList = gameState.skipWord
         if (teamList.isEmpty()) {
             return
         }
         val team = teamList[0].team
         val wholeTeam = playerList.filter { it.team == team }
-        if (teamList.size == wholeTeam.size){
+        if (teamList.size == wholeTeam.size) {
             logger.debug("Whole team ${team.name} wants to skip turn")
             listener.onStartSkipWord()
             wordTemp = fixedRateTimer("Skip turn", false, 4050, 1) {
@@ -237,7 +237,7 @@ class Game(private val listener: GameListener) {
                 wordTemp?.cancel()
                 wordTemp = null
             }
-        }else {
+        } else {
             wordTemp?.cancel()
             wordTemp = null
         }
@@ -283,6 +283,12 @@ class Game(private val listener: GameListener) {
             val player = mutList.find { user -> user.id == playerId }
             mutList.remove(player)
             finalList[index] = it.copy(usersPressed = mutList)
+        }
+        val player = gameState.skipWord.find { it.id == playerId }
+        if (ignoreWordId != SKIP_WORD_ID && player != null) {
+            val skipWord = gameState.skipWord.toMutableList()
+            skipWord.remove(player)
+            gameState = gameState.copy(skipWord = skipWord)
         }
         gameState = gameState.copy(words = finalList)
         if (wordTemp != null) {

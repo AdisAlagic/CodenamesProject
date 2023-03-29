@@ -353,6 +353,9 @@ fun Side.toTeamInt(): Int {
 }
 
 fun Int.asMinutesAndSeconds(): String {
+    if (this < 0) {
+        return "The fuck, why less then 0"
+    }
     val minutes = this / 60 / 1000
     val seconds = (this - ((minutes * 60) * 1000)) / 1000
     val milliseconds = this - minutes * 60 * 1000 - seconds * 1000

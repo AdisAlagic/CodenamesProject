@@ -100,7 +100,7 @@ object ConnectionManager {
         },
         onRequestSendLog = {
             logger.debug("Log request from player ${it.user.id}")
-            GameManager.game.provideLog(it.user.id, it.log.toString())
+            GameManager.game.provideLog(it.user.id, it.log)
         },
         onRequestPauseResume = {
             logger.debug("Pause/resume request from player ${it.user.id}")
@@ -124,7 +124,7 @@ object ConnectionManager {
     }
 
     fun sendMessage(packetable: Packetable) {
-        connections.forEach {
+        connections.parallelStream().forEach {
             it.sendMessage(packetable)
         }
     }
