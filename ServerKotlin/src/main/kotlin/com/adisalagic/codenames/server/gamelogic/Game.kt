@@ -27,7 +27,9 @@ class Game(private val listener: GameListener) {
     private var host: String = ConfigurationManager.config.host
     private var gameState = GameState.reset()
     private var turnTimer: Timer? = null
+
     private val twoMinutes = 2.minutes.toInt(DurationUnit.MILLISECONDS)
+    private val fourSeconds = 4050L
 
     @Volatile
     private var turnTimerValue = twoMinutes
@@ -232,7 +234,7 @@ class Game(private val listener: GameListener) {
         if (teamList.size == wholeTeam.size) {
             logger.debug("Whole team ${team.name} wants to skip turn")
             listener.onStartSkipWord()
-            wordTemp = fixedRateTimer("Skip turn", false, 4050, 1) {
+            wordTemp = fixedRateTimer("Skip turn", false, fourSeconds, 1) {
                 nextTurn()
                 wordTemp?.cancel()
                 wordTemp = null
@@ -253,7 +255,7 @@ class Game(private val listener: GameListener) {
         if (word.usersPressed.size == teamList.size) {
             logger.debug("Whole team ${team.name} clicked on word ${word.name}")
             listener.onStartOpenWord(word)
-            wordTemp = fixedRateTimer("Word opening", false, 4050, 1) {
+            wordTemp = fixedRateTimer("Word opening", false, fourSeconds, 1) {
                 word = word.copy(visible = true, usersPressed = emptyList())
                 wordTemp!!.cancel()
                 wordTemp = null

@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6d9fbca7-50a5-4599-ab18-00a4ac92b1c6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/api/Manager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/CountDownTimer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/CountDownTimer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/utils/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/jvmMain/kotlin/com/adisalagic/codenames/client/viewmodels/MainFrameViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +108,7 @@
       <command value="gradle clean jlink" />
     </option>
   </component>
-  <component name="RunManager" selected="Kotlin.Main">
+  <component name="RunManager" selected="Gradle.ServerKotlin [jar]">
     <configuration name="ServerKotlin [clean jlink]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -219,8 +216,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.Main" />
         <item itemvalue="Gradle.ServerKotlin [jar]" />
+        <item itemvalue="Kotlin.Main" />
         <item itemvalue="Gradle.ServerKotlin [jlink]" />
         <item itemvalue="Gradle.ServerKotlin [suggestMergedModuleInfo]" />
         <item itemvalue="Gradle.ServerKotlin [clean jlink]" />
@@ -267,7 +264,7 @@
       <workItem from="1679054369592" duration="13122000" />
       <workItem from="1679222737992" duration="2734000" />
       <workItem from="1679228823209" duration="597000" />
-      <workItem from="1680085270891" duration="4905000" />
+      <workItem from="1680085270891" duration="6223000" />
     </task>
     <servers />
   </component>

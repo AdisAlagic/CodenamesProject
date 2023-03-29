@@ -55,7 +55,7 @@ compose.desktop {
             modules("java.instrument", "java.sql", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "codenames"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
             vendor = "AdisAlagic"
             windows {
                 this.console = true
