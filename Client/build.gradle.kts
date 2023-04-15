@@ -1,6 +1,4 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
@@ -23,7 +21,7 @@ repositories {
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "18"
         }
         withJava()
     }
@@ -55,7 +53,7 @@ compose.desktop {
             modules("java.instrument", "java.sql", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "codenames"
-            packageVersion = "1.0.1"
+            packageVersion = "1.0.2"
             vendor = "AdisAlagic"
             windows {
                 this.console = true
@@ -70,5 +68,7 @@ compose.desktop {
                 configurationFiles.from("compose-desktop.pro")
             }
         }
+
     }
 }
+

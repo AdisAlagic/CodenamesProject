@@ -32,6 +32,7 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
+import com.adisalagic.codenames.client.api.objects.Role
 import com.adisalagic.codenames.client.api.objects.Team
 import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.api.objects.game.PlayerList
@@ -282,7 +283,7 @@ fun GameState.Word.isWholeTeamClicked(playerList: PlayerList): Boolean {
         return false
     }
     val team = this.usersPressed[0].team
-    val teamUsers = playerList.users.filter { it.team == team }
+    val teamUsers = playerList.users.filter { it.team == team && it.role != Role.MASTER }
     if (teamUsers.isEmpty()) {
         return false
     }

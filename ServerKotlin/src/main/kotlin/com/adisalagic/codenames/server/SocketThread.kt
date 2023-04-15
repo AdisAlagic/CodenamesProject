@@ -19,12 +19,13 @@ class ServerThread(
     private var started = false
     private val thread = Thread {
         started = true
-        if (address.isBlank()) {
-            address = "127.0.0.1"
-        }
         logger.info("Starting server on port: $port and address: $address")
         val serverSocket = ServerSocket().apply {
-            bind(InetSocketAddress(address, port))
+            if (address.isBlank()) {
+                bind(InetSocketAddress(port))
+            }else {
+                bind(InetSocketAddress(address, port))
+            }
         }
         logger.info("Starting server success!")
         while (!stop){

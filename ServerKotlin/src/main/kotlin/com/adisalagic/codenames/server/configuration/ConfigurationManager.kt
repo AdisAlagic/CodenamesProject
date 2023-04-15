@@ -74,7 +74,7 @@ object ConfigurationManager {
             try {
                 when (splitted[0]) {
                     "host" -> config = config.copy(host = splitted.getOrElse(1) { "" })
-                    "ip" -> config = config.copy(ip = splitted.getOrElse(1) { "" })
+//                    "ip" -> config = config.copy(ip = splitted.getOrElse(1) { "" })
                     "port" -> config = config.copy(port = splitted[1].toInt())
                     "dictionary" -> config = config.copy(dictionary = splitted[1])
                     "debug" -> {

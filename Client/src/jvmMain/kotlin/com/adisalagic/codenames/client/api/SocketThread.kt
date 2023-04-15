@@ -60,58 +60,7 @@ class SocketThread(
         return Thread {
             try {
                 socket.use { socket ->
-                    socket.connect(address)
-                    connected = true
-                    onConnectSuccess(socket.inetAddress.hostAddress)
-                    val inStream = socket.getInputStream()
-                    val dataInputStream = DataInputStream(inStream)
-                    var buffer: ByteArray = ByteArray(1024)
-                    val builder = StringBuilder()
-                    var event = -1
-                    while (connected) {
-                        do {
-                            if (builder.isNotEmpty()) {
-                                onRead(event, builder.toString())
-                                builder.setLength(0)
-                            }
-                            try {
-                                var needToRead = flipInt(dataInputStream.readInt())
-                                event = flipInt(dataInputStream.readInt())
-                                needToRead -= Int.SIZE_BYTES
-                                buffer = ByteArray(needToRead)
-                                val bytes = dataInputStream.read(buffer, 0, needToRead)
-                                if (bytes != needToRead) {
-                                    log.debug("$bytes != $needToRead; closing socket")
-                                    socket.close()
-                                }
-                                builder.append(String(buffer, 0, needToRead))
-                            } catch (_: SocketTimeoutException) {
-                                if (buffer.isNotEmpty()){
-                                    buffer.drop(buffer.size)
-                                }
-                            } catch (e: IOException) {
-                                onDisconnect(DisconnectReason.HARD)
-                                connected = false
-                            }
-
-                        } while (inStream.available() > 0)
-                        var sendCounter = 0
-                        synchronized(queue) {
-                            while (queue.isNotEmpty()) {
-                                log.debug("Sending data")
-                                try {
-                                    socket.getOutputStream().write(queue.poll())
-                                } catch (e: IOException) {
-                                    onDisconnect(DisconnectReason.HARD)
-                                    connected = false
-                                }
-                                sendCounter++
-                                if (sendCounter > sendLimit) {
-                                    break
-                                }
-                            }
-                        }
-                    }
+                    readSocket(socket, address)
                 }
             } catch (_: SocketTimeoutException) {
                 log.debug("Nothing to worry about")
@@ -145,6 +94,61 @@ class SocketThread(
     private fun createSocket(): Socket {
         return Socket().apply {
             soTimeout = 60
+        }
+    }
+
+    private fun readSocket(socket: Socket, address: InetSocketAddress) {
+        socket.connect(address)
+        connected = true
+        onConnectSuccess(socket.inetAddress.hostAddress)
+        val inStream = socket.getInputStream()
+        val dataInputStream = DataInputStream(inStream)
+        var buffer: ByteArray = ByteArray(1024)
+        val builder = StringBuilder()
+        var event = -1
+        while (connected) {
+            do {
+                if (builder.isNotEmpty()) {
+                    onRead(event, builder.toString())
+                    builder.setLength(0)
+                }
+                try {
+                    var needToRead = flipInt(dataInputStream.readInt())
+                    event = flipInt(dataInputStream.readInt())
+                    needToRead -= Int.SIZE_BYTES
+                    buffer = ByteArray(needToRead)
+                    val bytes = dataInputStream.readFully(buffer, 0, needToRead)
+//                    if (bytes != needToRead) {
+//                        log.debug("$bytes != $needToRead; closing socket")
+//                        socket.close()
+//                    }
+                    builder.append(String(buffer, 0, needToRead))
+                } catch (_: SocketTimeoutException) {
+                    if (buffer.isNotEmpty()){
+                        buffer.drop(buffer.size)
+                    }
+                } catch (e: IOException) {
+                    onDisconnect(DisconnectReason.HARD)
+                    connected = false
+                }
+
+            } while (inStream.available() > 0)
+            var sendCounter = 0
+            synchronized(queue) {
+                while (queue.isNotEmpty()) {
+                    log.debug("Sending data")
+                    try {
+                        socket.getOutputStream().write(queue.poll())
+                    } catch (e: IOException) {
+                        onDisconnect(DisconnectReason.HARD)
+                        connected = false
+                    }
+                    sendCounter++
+                    if (sendCounter > sendLimit) {
+                        break
+                    }
+                }
+            }
         }
     }
 }

@@ -61,7 +61,7 @@ fun AdminPanel() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ButtonIcon(description: String, resourse: String, onClick: () -> Unit) {
-    val file = File("./src/jvmMain/resources/$resourse")
+//    val file = File("./src/jvmMain/resources/$resourse")
     TooltipArea(
         tooltip = {
             Column {

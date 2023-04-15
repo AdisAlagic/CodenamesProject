@@ -70,6 +70,11 @@ class Game(private val listener: GameListener) {
 
     fun deleteUser(id: Int) {
         checkIfAnotherWordIsClicked(playerId = id, -1)
+        if (isHost(id)) {
+            if (gameState.state != GameState.GeneralState.PAUSED) {
+                pauseResume()
+            }
+        }
         playerList.remove(playerList.find { it.id == id })
         listener.onPlayerListChanged(playerList)
     }
@@ -97,6 +102,7 @@ class Game(private val listener: GameListener) {
         )
         playerList.add(player)
         listener.onPlayerListChanged(playerList)
+        sendTimerInfo()
         return player
     }
 
@@ -251,7 +257,7 @@ class Game(private val listener: GameListener) {
             return
         }
         val team = word.usersPressed[0].team
-        val teamList = playerList.filter { it.team == team }
+        val teamList = playerList.filter { it.team == team && it.role != Role.MASTER }
         if (word.usersPressed.size == teamList.size) {
             logger.debug("Whole team ${team.name} clicked on word ${word.name}")
             listener.onStartOpenWord(word)
@@ -454,6 +460,7 @@ class Game(private val listener: GameListener) {
                 if (turnTimerValue >= twoMinutes) {
                     turnTimerValue = twoMinutes
                 }
+                sendTimerInfo()
             }
         }
     }

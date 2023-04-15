@@ -3,7 +3,9 @@ package com.adisalagic.codenames.client.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,8 +17,6 @@ import com.adisalagic.codenames.client.api.objects.game.GameState
 import com.adisalagic.codenames.client.colors.*
 import com.adisalagic.codenames.client.utils.*
 import com.adisalagic.codenames.client.viewmodels.ViewModelsStore
-import kotlinx.coroutines.*
-import java.util.*
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
@@ -143,13 +143,11 @@ enum class Side {
 
 fun animateProgress(time: Double, onProgress: (progress: Float) -> Unit = {}, onDone: () -> Unit = {}): CountDownTimer {
     //somewhere is error, but I cant find it
-    var progress: Float = 0f
-    var est = 0.0 //time in milliseconds
     val finalTime = time / 1.0
     return CountDownTimer(
         duration = finalTime.milliseconds,
         eventTriggerInterval = 1.milliseconds,
-    ){
+    ) {
         onProgress((it.toDouble(DurationUnit.MILLISECONDS).toFloat() / finalTime).toFloat())
     }.start()
 }
