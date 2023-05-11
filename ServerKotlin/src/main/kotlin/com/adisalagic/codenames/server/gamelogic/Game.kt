@@ -236,7 +236,7 @@ class Game(private val listener: GameListener) {
             return
         }
         val team = teamList[0].team
-        val wholeTeam = playerList.filter { it.team == team }
+        val wholeTeam = playerList.filter { it.team == team && it.role != Role.MASTER }
         if (teamList.size == wholeTeam.size) {
             logger.debug("Whole team ${team.name} wants to skip turn")
             listener.onStartSkipWord()
